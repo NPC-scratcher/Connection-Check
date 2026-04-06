@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useConnectionMonitor } from '../hooks/useConnectionMonitor';
-import { useSettings } from '../hooks/useSettings';
+import { useSettings, DEFAULT_USER_NAME } from '../hooks/useSettings';
 import { useSpeedTestHistory } from '../hooks/useSpeedTestHistory';
 import { StatCard } from './StatCard';
 import { HistoryTable } from './HistoryTable';
@@ -37,8 +37,9 @@ export function Dashboard() {
           if (profileRes.ok) {
             const profileData = await profileRes.json();
             updateSettings({
-              userName: profileData.name || 'Usuario',
-              avatarUrl: profileData.picture || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'
+              userName: profileData.name || t.defaultUser,
+              userEmail: profileData.email,
+              avatarUrl: profileData.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData.name || t.defaultUser}`
             });
           }
 
@@ -109,6 +110,15 @@ export function Dashboard() {
       setShowClearConfirm(true);
       setTimeout(() => setShowClearConfirm(false), 3000); // Reset after 3 seconds
     }
+  };
+
+  const handleLogout = () => {
+    setDriveToken(null);
+    updateSettings({
+      userName: DEFAULT_USER_NAME,
+      userEmail: undefined,
+      avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${DEFAULT_USER_NAME}`
+    });
   };
 
   return (
@@ -252,6 +262,7 @@ export function Dashboard() {
             <ProfileTab 
               settings={settings} 
               onSave={updateSettings} 
+              onLogout={handleLogout}
               onRequestNotificationPermission={requestNotificationPermission}
             />
           </div>

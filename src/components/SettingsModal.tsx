@@ -6,10 +6,11 @@ import { translations, Language } from '../lib/translations';
 interface SettingsModalProps {
   settings: Settings;
   onSave: (newSettings: Partial<Settings>) => void;
+  onLogout: () => void;
   onRequestNotificationPermission: () => Promise<boolean>;
 }
 
-export function SettingsModal({ settings, onSave, onRequestNotificationPermission }: SettingsModalProps) {
+export function SettingsModal({ settings, onSave, onLogout, onRequestNotificationPermission }: SettingsModalProps) {
   const t = translations[settings.language];
   const [error, setError] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -93,9 +94,21 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
               {settings.userName && settings.userName !== DEFAULT_USER_NAME ? `${t.hello}, ${settings.userName}` : t.profile}
             </h1>
+            {settings.userEmail && (
+              <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{settings.userEmail}</p>
+            )}
             <p className="text-gray-500 dark:text-gray-400 mt-1">
               {settings.userName && settings.userName !== DEFAULT_USER_NAME ? t.googleSyncDesc : t.googleSyncDesc}
             </p>
+            {settings.userName !== DEFAULT_USER_NAME && (
+              <button
+                onClick={onLogout}
+                className="mt-3 inline-flex items-center space-x-2 text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+                <span>{t.logout}</span>
+              </button>
+            )}
             {settings.userName === DEFAULT_USER_NAME && (
               <div className="space-y-3">
                 <button
@@ -190,23 +203,6 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
-                <div className="flex items-center space-x-3">
-                  <Globe className="w-5 h-5 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.languageLabel}</span>
-                </div>
-                <select
-                  value={settings.language}
-                  onChange={(e) => onSave({ language: e.target.value as Language })}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1 text-xs outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-                >
-                  <option value="es">Español</option>
-                  <option value="en">English</option>
-                  <option value="pt">Português</option>
-                  <option value="fr">Français</option>
-                </select>
-              </div>
-
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
                 <div className="flex items-center space-x-3">
                   <Bell className="w-5 h-5 text-gray-400" />

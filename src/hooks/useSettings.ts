@@ -8,6 +8,7 @@ export interface Settings {
   darkMode: boolean;
   autoSpeedtestInterval?: number;
   userName?: string;
+  userEmail?: string;
   avatarUrl?: string;
   language: Language;
 }

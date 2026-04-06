@@ -81,6 +81,8 @@ export interface Translation {
   hello: string;
   defaultUser: string;
   withGoogle: string;
+  logout: string;
+  connectedAs: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -163,7 +165,9 @@ export const translations: Record<Language, Translation> = {
     popupBlockedError: 'El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para sincronizar con Google Drive.',
     hello: 'Hola',
     defaultUser: 'Usuario',
-    withGoogle: 'con Google'
+    withGoogle: 'con Google',
+    logout: 'Cerrar Sesión',
+    connectedAs: 'Conectado como'
   },
   en: {
     home: 'Home',
@@ -244,7 +248,9 @@ export const translations: Record<Language, Translation> = {
     popupBlockedError: 'The browser blocked the popup. Please allow popups to sync with Google Drive.',
     hello: 'Hello',
     defaultUser: 'User',
-    withGoogle: 'with Google'
+    withGoogle: 'with Google',
+    logout: 'Logout',
+    connectedAs: 'Connected as'
   },
   pt: {
     home: 'Início',
@@ -325,7 +331,9 @@ export const translations: Record<Language, Translation> = {
     popupBlockedError: 'O navegador bloqueou o pop-up. Por favor, permita pop-ups para sincronizar com o Google Drive.',
     hello: 'Olá',
     defaultUser: 'Usuário',
-    withGoogle: 'com Google'
+    withGoogle: 'com Google',
+    logout: 'Sair',
+    connectedAs: 'Conectado como'
   },
   fr: {
     home: 'Accueil',
@@ -406,6 +414,8 @@ export const translations: Record<Language, Translation> = {
     popupBlockedError: 'Le navigateur a bloqué la fenêtre contextuelle. Veuillez autoriser les fenêtres contextuelles pour synchroniser avec Google Drive.',
     hello: 'Bonjour',
     defaultUser: 'Utilisateur',
-    withGoogle: 'avec Google'
+    withGoogle: 'avec Google',
+    logout: 'Déconnexion',
+    connectedAs: 'Connecté en tant que'
   }
 };
