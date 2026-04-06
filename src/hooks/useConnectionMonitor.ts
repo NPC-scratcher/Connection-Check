@@ -132,10 +132,20 @@ export function useConnectionMonitor(settings: Settings) {
   }, [handleOnline, handleOffline, settings.checkInterval]); // Restart loop if checkInterval changes
 
   const clearHistory = () => {
-    if (window.confirm('¿Estás seguro de que deseas borrar el historial?')) {
-      setEvents([]);
-    }
+    setEvents([]);
   };
 
-  return { isOnline, events, clearHistory };
+  const importEvents = useCallback((newEvents: DisconnectionEvent[]) => {
+    setEvents((prev) => {
+      // Merge and deduplicate by ID
+      const eventMap = new Map<string, DisconnectionEvent>();
+      prev.forEach(e => eventMap.set(e.id, e));
+      newEvents.forEach(e => eventMap.set(e.id, e));
+      
+      // Sort by disconnectTime descending
+      return Array.from(eventMap.values()).sort((a, b) => b.disconnectTime - a.disconnectTime);
+    });
+  }, []);
+
+  return { isOnline, events, clearHistory, importEvents };
 }

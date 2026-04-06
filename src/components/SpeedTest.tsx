@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Gauge, Download, Play, Loader2, Activity } from 'lucide-react';
+import { Gauge, Download, Upload, Play, Loader2, Activity } from 'lucide-react';
 
 export function SpeedTest() {
   const [isTesting, setIsTesting] = useState(false);
   const [speedMbps, setSpeedMbps] = useState<number | null>(null);
+  const [uploadMbps, setUploadMbps] = useState<number | null>(null);
   const [pingMs, setPingMs] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const runTest = async () => {
     setIsTesting(true);
     setSpeedMbps(null);
+    setUploadMbps(null);
     setPingMs(null);
     setError(null);
 
@@ -44,6 +46,25 @@ export function SpeedTest() {
       // Calculate Mbps: (bytes * 8) / seconds / 1,000,000
       const mbps = (receivedLength * 8) / durationSeconds / 1000000;
       setSpeedMbps(Number(mbps.toFixed(2)));
+
+      // 3. Test Upload Speed (5 MB file)
+      const uploadSize = 5 * 1024 * 1024; // 5 MB
+      const uploadData = new Uint8Array(uploadSize);
+      // Fill with random data so it's not easily compressible
+      for (let i = 0; i < uploadSize; i += 65536) {
+        crypto.getRandomValues(new Uint8Array(uploadData.buffer, i, Math.min(65536, uploadSize - i)));
+      }
+
+      const uploadStart = performance.now();
+      await fetch(`https://speed.cloudflare.com/__up?_t=${Date.now()}`, {
+        method: 'POST',
+        body: uploadData,
+        cache: 'no-store'
+      });
+      const uploadEnd = performance.now();
+      const uploadDurationSeconds = (uploadEnd - uploadStart) / 1000;
+      const upMbps = (uploadSize * 8) / uploadDurationSeconds / 1000000;
+      setUploadMbps(Number(upMbps.toFixed(2)));
 
     } catch (err) {
       console.error(err);
@@ -81,17 +102,30 @@ export function SpeedTest() {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 flex items-center space-x-1">
             <Download className="w-4 h-4" />
             <span>Descarga</span>
           </div>
           <div className="flex items-baseline space-x-1">
-            <span className="text-3xl font-bold text-gray-900 dark:text-white">
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
               {speedMbps !== null ? speedMbps : '--'}
             </span>
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Mbps</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Mbps</span>
+          </div>
+        </div>
+
+        <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 flex items-center space-x-1">
+            <Upload className="w-4 h-4" />
+            <span>Subida</span>
+          </div>
+          <div className="flex items-baseline space-x-1">
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              {uploadMbps !== null ? uploadMbps : '--'}
+            </span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Mbps</span>
           </div>
         </div>
         
@@ -101,10 +135,10 @@ export function SpeedTest() {
             <span>Ping</span>
           </div>
           <div className="flex items-baseline space-x-1">
-            <span className="text-3xl font-bold text-gray-900 dark:text-white">
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
               {pingMs !== null ? pingMs : '--'}
             </span>
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">ms</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">ms</span>
           </div>
         </div>
       </div>

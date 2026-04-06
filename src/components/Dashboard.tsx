@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { useConnectionMonitor } from '../hooks/useConnectionMonitor';
 import { useSettings } from '../hooks/useSettings';
 import { StatCard } from './StatCard';
@@ -6,13 +6,15 @@ import { HistoryTable } from './HistoryTable';
 import { UptimeChart } from './UptimeChart';
 import { SpeedTest } from './SpeedTest';
 import { SettingsModal } from './SettingsModal';
-import { isSameDay, isSameMonth, isSameYear, exportToCSV, calculateUptimeToday } from '../lib/utils';
-import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, Settings as SettingsIcon, Activity } from 'lucide-react';
+import { isSameDay, isSameMonth, isSameYear, exportToCSV, exportToExcel, parseImportFile, calculateUptimeToday } from '../lib/utils';
+import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, Upload, Settings as SettingsIcon, Activity, FileSpreadsheet } from 'lucide-react';
 
 export function Dashboard() {
   const { settings, updateSettings, requestNotificationPermission } = useSettings();
-  const { isOnline, events, clearHistory } = useConnectionMonitor(settings);
+  const { isOnline, events, clearHistory, importEvents } = useConnectionMonitor(settings);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -31,6 +33,38 @@ export function Dashboard() {
 
     return { day, month, year, uptime };
   }, [events]);
+
+  const handleClearClick = () => {
+    if (showClearConfirm) {
+      clearHistory();
+      setShowClearConfirm(false);
+    } else {
+      setShowClearConfirm(true);
+      setTimeout(() => setShowClearConfirm(false), 3000); // Reset after 3 seconds
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const importedEvents = await parseImportFile(file);
+      importEvents(importedEvents);
+      alert('Historial importado correctamente.');
+    } catch (error) {
+      console.error(error);
+      alert('Error al importar el archivo. Asegúrate de que sea un archivo exportado por esta aplicación.');
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 md:p-8 font-sans transition-colors">
@@ -104,24 +138,52 @@ export function Dashboard() {
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Historial de Desconexiones</h2>
-            {events.length > 0 && (
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={() => exportToCSV(events)}
-                  className="inline-flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm px-3 py-1.5 rounded-md transition-colors"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Exportar CSV</span>
-                </button>
-                <button 
-                  onClick={clearHistory}
-                  className="inline-flex items-center space-x-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-md transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Borrar</span>
-                </button>
-              </div>
-            )}
+            <div className="flex flex-wrap items-center gap-2">
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                accept=".csv, .xlsx, .xls" 
+                className="hidden" 
+              />
+              <button 
+                onClick={handleImportClick}
+                className="inline-flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm px-3 py-1.5 rounded-md transition-colors"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Importar</span>
+              </button>
+              
+              {events.length > 0 && (
+                <>
+                  <button 
+                    onClick={() => exportToCSV(events)}
+                    className="inline-flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm px-3 py-1.5 rounded-md transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>CSV</span>
+                  </button>
+                  <button 
+                    onClick={() => exportToExcel(events)}
+                    className="inline-flex items-center space-x-2 text-sm text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 shadow-sm px-3 py-1.5 rounded-md transition-colors"
+                  >
+                    <FileSpreadsheet className="w-4 h-4" />
+                    <span>Excel</span>
+                  </button>
+                  <button 
+                    onClick={handleClearClick}
+                    className={`inline-flex items-center space-x-2 text-sm px-3 py-1.5 rounded-md transition-colors ${
+                      showClearConfirm 
+                        ? 'bg-red-600 text-white hover:bg-red-700' 
+                        : 'text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30'
+                    }`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>{showClearConfirm ? '¿Confirmar?' : 'Borrar'}</span>
+                  </button>
+                </>
+              )}
+            </div>
           </div>
           <HistoryTable events={events} />
         </section>

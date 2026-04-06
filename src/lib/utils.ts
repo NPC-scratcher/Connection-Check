@@ -1,3 +1,5 @@
+import * as XLSX from 'xlsx';
+
 export function formatDuration(ms: number | null): string {
   if (ms === null) return 'En curso...';
   
@@ -64,6 +66,58 @@ export function exportToCSV(events: any[]) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+}
+
+export function exportToExcel(events: any[]) {
+  const data = events.map(e => ({
+    'ID': e.id,
+    'Fecha Desconexion': formatDate(e.disconnectTime),
+    'Hora Desconexion': formatTime(e.disconnectTime),
+    'Hora Reconexion': e.reconnectTime ? formatTime(e.reconnectTime) : 'En curso',
+    'Duracion': e.duration ? formatDuration(e.duration) : 'En curso',
+    'Disconnect Timestamp': e.disconnectTime,
+    'Reconnect Timestamp': e.reconnectTime || ''
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Historial");
+  
+  XLSX.writeFile(wb, `historial_conexiones_${formatDate(Date.now()).replace(/\//g, '-')}.xlsx`);
+}
+
+export async function parseImportFile(file: File): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = e.target?.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+        
+        const importedEvents = json.map((row: any) => {
+          // Si el archivo fue exportado por nuestra app, tendrá los timestamps originales
+          if (row['Disconnect Timestamp']) {
+            return {
+              id: row['ID'] || crypto.randomUUID(),
+              disconnectTime: Number(row['Disconnect Timestamp']),
+              reconnectTime: row['Reconnect Timestamp'] ? Number(row['Reconnect Timestamp']) : null,
+              duration: row['Reconnect Timestamp'] ? Number(row['Reconnect Timestamp']) - Number(row['Disconnect Timestamp']) : null
+            };
+          }
+          throw new Error('Formato de archivo no válido. Faltan las columnas de Timestamp.');
+        });
+        
+        resolve(importedEvents);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    reader.onerror = (error) => reject(error);
+    reader.readAsBinaryString(file);
+  });
 }
 
 export function calculateUptimeToday(events: any[]): number {
