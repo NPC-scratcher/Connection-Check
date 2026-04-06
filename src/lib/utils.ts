@@ -47,13 +47,15 @@ export function isSameYear(d1: Date, d2: Date): boolean {
 }
 
 export function exportToCSV(events: any[]) {
-  const headers = ['ID', 'Fecha Desconexion', 'Hora Desconexion', 'Hora Reconexion', 'Duracion'];
+  const headers = ['ID', 'Fecha Desconexion', 'Hora Desconexion', 'Hora Reconexion', 'Duracion', 'Disconnect Timestamp', 'Reconnect Timestamp'];
   const rows = events.map(e => [
     e.id,
     formatDate(e.disconnectTime),
     formatTime(e.disconnectTime),
     e.reconnectTime ? formatTime(e.reconnectTime) : 'En curso',
-    e.duration ? formatDuration(e.duration) : 'En curso'
+    e.duration ? formatDuration(e.duration) : 'En curso',
+    e.disconnectTime,
+    e.reconnectTime || ''
   ]);
   
   const csvContent = "data:text/csv;charset=utf-8," + 
@@ -98,7 +100,7 @@ export async function parseImportFile(file: File): Promise<any[]> {
         const json = XLSX.utils.sheet_to_json(worksheet);
         
         const importedEvents = json.map((row: any) => {
-          // Si el archivo fue exportado por nuestra app, tendrá los timestamps originales
+          // Si el archivo fue exportado por nuestra app (nueva versión)
           if (row['Disconnect Timestamp']) {
             return {
               id: row['ID'] || crypto.randomUUID(),
@@ -106,6 +108,39 @@ export async function parseImportFile(file: File): Promise<any[]> {
               reconnectTime: row['Reconnect Timestamp'] ? Number(row['Reconnect Timestamp']) : null,
               duration: row['Reconnect Timestamp'] ? Number(row['Reconnect Timestamp']) - Number(row['Disconnect Timestamp']) : null
             };
+          }
+          // Fallback para archivos CSV antiguos (sin Timestamp)
+          else if (row['Fecha Desconexion'] && row['Hora Desconexion']) {
+            const dateParts = String(row['Fecha Desconexion']).split('/');
+            const timeParts = String(row['Hora Desconexion']).split(':');
+            
+            if (dateParts.length === 3 && timeParts.length >= 2) {
+              const [day, month, year] = dateParts.map(Number);
+              const [hours, minutes, seconds = 0] = timeParts.map(Number);
+              const disconnectTime = new Date(year, month - 1, day, hours, minutes, seconds).getTime();
+              
+              let reconnectTime = null;
+              let duration = null;
+              
+              if (row['Hora Reconexion'] && row['Hora Reconexion'] !== 'En curso') {
+                const recTimeParts = String(row['Hora Reconexion']).split(':');
+                const [recHours, recMinutes, recSeconds = 0] = recTimeParts.map(Number);
+                reconnectTime = new Date(year, month - 1, day, recHours, recMinutes, recSeconds).getTime();
+                
+                // Si cruzó la medianoche
+                if (reconnectTime < disconnectTime) {
+                  reconnectTime += 24 * 60 * 60 * 1000;
+                }
+                duration = reconnectTime - disconnectTime;
+              }
+              
+              return {
+                id: row['ID'] || crypto.randomUUID(),
+                disconnectTime,
+                reconnectTime,
+                duration
+              };
+            }
           }
           throw new Error('Formato de archivo no válido. Faltan las columnas de Timestamp.');
         });

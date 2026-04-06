@@ -1,0 +1,21 @@
+{
+  "name": "Monitor de Conexión",
+  "short_name": "Monitor",
+  "description": "Monitor de conexión a internet y pruebas de velocidad.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=monitor&backgroundColor=2563eb",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/shapes/svg?seed=monitor&backgroundColor=2563eb",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

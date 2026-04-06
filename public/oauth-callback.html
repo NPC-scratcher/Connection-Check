@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Autenticando...</title>
+</head>
+<body>
+  <script>
+    // Google OAuth Implicit Flow returns the token in the URL hash
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get('access_token');
+    const error = params.get('error');
+    
+    if (window.opener) {
+      if (accessToken) {
+        window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', token: accessToken }, '*');
+      } else if (error) {
+        window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error: error }, '*');
+      }
+      window.close();
+    } else {
+      document.body.innerText = 'Autenticación completada. Puedes cerrar esta ventana.';
+    }
+  </script>
+</body>
+</html>

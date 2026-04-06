@@ -5,6 +5,9 @@ export interface Settings {
   pingUrl: string;
   notificationsEnabled: boolean;
   darkMode: boolean;
+  autoSpeedtestInterval?: number;
+  userName?: string;
+  avatarUrl?: string;
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -12,6 +15,9 @@ const DEFAULT_SETTINGS: Settings = {
   pingUrl: 'https://www.google.com/favicon.ico',
   notificationsEnabled: false,
   darkMode: false,
+  autoSpeedtestInterval: 0,
+  userName: 'Usuario',
+  avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
 };
 
 export function useSettings() {

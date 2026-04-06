@@ -40,11 +40,13 @@ export function useConnectionMonitor(settings: Settings) {
 
   const handleOffline = useCallback(() => {
     setIsOnline((prevOnline) => {
-      if (prevOnline && settingsRef.current.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-        new Notification('Conexión Perdida', { 
-          body: 'Se ha perdido la conexión a internet.',
-          icon: '/vite.svg'
-        });
+      if (prevOnline) {
+        if (settingsRef.current.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification('Conexión Perdida', { 
+            body: 'Se ha perdido la conexión a internet.',
+            icon: '/vite.svg'
+          });
+        }
       }
       return false;
     });
@@ -66,11 +68,13 @@ export function useConnectionMonitor(settings: Settings) {
 
   const handleOnline = useCallback(() => {
     setIsOnline((prevOnline) => {
-      if (!prevOnline && settingsRef.current.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
-        new Notification('Conexión Restaurada', { 
-          body: 'Se ha recuperado la conexión a internet.',
-          icon: '/vite.svg'
-        });
+      if (!prevOnline) {
+        if (settingsRef.current.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification('Conexión Restaurada', { 
+            body: 'Se ha recuperado la conexión a internet.',
+            icon: '/vite.svg'
+          });
+        }
       }
       return true;
     });

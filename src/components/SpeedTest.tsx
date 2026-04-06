@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Download, Upload, Play, Loader2, Activity } from 'lucide-react';
+import { Settings } from '../hooks/useSettings';
 
-export function SpeedTest() {
+interface SpeedTestProps {
+  settings?: Settings;
+  onComplete?: (result: { ping: number; download: number; upload: number }) => void;
+}
+
+export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
   const [isTesting, setIsTesting] = useState(false);
   const [speedMbps, setSpeedMbps] = useState<number | null>(null);
   const [uploadMbps, setUploadMbps] = useState<number | null>(null);
   const [pingMs, setPingMs] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const runTest = async () => {
+  const runTest = useCallback(async () => {
+    if (isTesting) return;
     setIsTesting(true);
     setSpeedMbps(null);
     setUploadMbps(null);
@@ -20,7 +27,8 @@ export function SpeedTest() {
       const pingStart = performance.now();
       await fetch(`https://speed.cloudflare.com/__down?bytes=10&_t=${Date.now()}`, { cache: 'no-store' });
       const pingEnd = performance.now();
-      setPingMs(Math.round(pingEnd - pingStart));
+      const finalPing = Math.round(pingEnd - pingStart);
+      setPingMs(finalPing);
 
       // 2. Test Download Speed (15 MB file for a good average)
       const downloadSize = 15 * 1024 * 1024; // 15 MB
@@ -45,7 +53,8 @@ export function SpeedTest() {
       
       // Calculate Mbps: (bytes * 8) / seconds / 1,000,000
       const mbps = (receivedLength * 8) / durationSeconds / 1000000;
-      setSpeedMbps(Number(mbps.toFixed(2)));
+      const finalDownload = Number(mbps.toFixed(2));
+      setSpeedMbps(finalDownload);
 
       // 3. Test Upload Speed (5 MB file)
       const uploadSize = 5 * 1024 * 1024; // 5 MB
@@ -64,7 +73,11 @@ export function SpeedTest() {
       const uploadEnd = performance.now();
       const uploadDurationSeconds = (uploadEnd - uploadStart) / 1000;
       const upMbps = (uploadSize * 8) / uploadDurationSeconds / 1000000;
-      setUploadMbps(Number(upMbps.toFixed(2)));
+      const finalUpload = Number(upMbps.toFixed(2));
+      setUploadMbps(finalUpload);
+
+      // Call onComplete callback
+      onComplete?.({ ping: finalPing, download: finalDownload, upload: finalUpload });
 
     } catch (err) {
       console.error(err);
@@ -72,7 +85,20 @@ export function SpeedTest() {
     } finally {
       setIsTesting(false);
     }
-  };
+  }, [isTesting, onComplete]);
+
+  // Auto-speedtest logic
+  useEffect(() => {
+    if (!settings?.autoSpeedtestInterval || settings.autoSpeedtestInterval <= 0) return;
+
+    const intervalMs = settings.autoSpeedtestInterval * 60 * 60 * 1000; // hours to ms
+    
+    const intervalId = setInterval(() => {
+      runTest();
+    }, intervalMs);
+
+    return () => clearInterval(intervalId);
+  }, [settings?.autoSpeedtestInterval, runTest]);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors">
