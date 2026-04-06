@@ -11,10 +11,12 @@ import { SettingsModal as ProfileTab } from './SettingsModal';
 import { NetworkInfoCard } from './NetworkInfoCard';
 import { isSameDay, isSameMonth, isSameYear, exportToCSV, exportToExcel, calculateUptimeToday } from '../lib/utils';
 import { findBackupFile, downloadBackup, uploadBackup } from '../lib/googleDrive';
-import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, FileSpreadsheet, PictureInPicture, Home, Activity, Clock, User as UserIcon, ShieldCheck } from 'lucide-react';
+import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, FileSpreadsheet, Home, Activity, Clock, User as UserIcon, ShieldCheck } from 'lucide-react';
+import { translations } from '../lib/translations';
 
 export function Dashboard() {
   const { settings, updateSettings, requestNotificationPermission } = useSettings();
+  const t = translations[settings.language];
   const { isOnline, events, clearHistory, importEvents } = useConnectionMonitor(settings);
   const { history: speedHistory, addResult: addSpeedResult, clearHistory: clearSpeedHistory } = useSpeedTestHistory();
   
@@ -109,62 +111,6 @@ export function Dashboard() {
     }
   };
 
-  const handlePiP = async () => {
-    if (!('documentPictureInPicture' in window)) {
-      alert('Tu navegador no soporta la API de Picture-in-Picture para documentos.');
-      return;
-    }
-
-    try {
-      // @ts-ignore
-      const pipWindow = await window.documentPictureInPicture.requestWindow({
-        width: 300,
-        height: 150,
-      });
-
-      // Copy styles
-      [...document.styleSheets].forEach((styleSheet) => {
-        try {
-          const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
-          const style = document.createElement('style');
-          style.textContent = cssRules;
-          pipWindow.document.head.appendChild(style);
-        } catch (e) {
-          const link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.type = styleSheet.type;
-          link.media = styleSheet.media.mediaText;
-          link.href = styleSheet.href || '';
-          pipWindow.document.head.appendChild(link);
-        }
-      });
-
-      // Render simple status
-      const container = document.createElement('div');
-      container.className = 'flex flex-col items-center justify-center h-full bg-gray-50 dark:bg-gray-900 font-sans';
-      
-      const updatePiP = () => {
-        container.innerHTML = `
-          <div class="flex flex-col items-center space-y-3">
-            <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full border shadow-sm ${
-              isOnline 
-                ? 'bg-green-50 border-green-200 text-green-700' 
-                : 'bg-red-50 border-red-200 text-red-700'
-            }">
-              <span class="font-semibold">${isOnline ? 'Conectado' : 'Desconectado'}</span>
-            </div>
-            <p class="text-sm text-gray-500">Uptime: ${stats.uptime}%</p>
-          </div>
-        `;
-      };
-      
-      updatePiP();
-      pipWindow.document.body.appendChild(container);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 font-sans transition-colors">
       <div className="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
@@ -174,28 +120,19 @@ export function Dashboard() {
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Resumen de Conexión
+                {t.connectionSummary}
               </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Monitor de Conexión • Verificando cada {settings.checkInterval}s</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t.checkingEvery} {settings.checkInterval}{t.seconds}</p>
             </div>
             
             <div className="flex items-center space-x-3">
-              {'documentPictureInPicture' in window && (
-                <button 
-                  onClick={handlePiP}
-                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-white dark:bg-gray-800 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm transition-colors"
-                  title="Mini-ventana (Picture-in-Picture)"
-                >
-                  <PictureInPicture className="w-5 h-5" />
-                </button>
-              )}
               <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full border shadow-sm ${
                 isOnline 
                   ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
                   : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400'
               }`}>
                 {isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5 animate-pulse" />}
-                <span className="font-semibold">{isOnline ? 'Conectado' : 'Desconectado'}</span>
+                <span className="font-semibold">{isOnline ? t.connected : t.disconnected}</span>
               </div>
             </div>
           </header>
@@ -209,45 +146,45 @@ export function Dashboard() {
             {/* Quick Actions */}
             <section className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Prueba de Velocidad Rápida</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Comprueba tu velocidad de descarga, subida y ping al instante.</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t.quickSpeedTest}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{t.quickSpeedTestDesc}</p>
               </div>
               <button
                 onClick={() => setActiveTab('speedtest')}
                 className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-medium transition-colors shadow-sm"
               >
-                Ir a Velocidad
+                {t.goToSpeed}
               </button>
             </section>
 
             {/* Stats */}
             <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
               <StatCard 
-                title="Score" 
+                title={t.score} 
                 value={`${Math.max(0, Math.min(100, Math.round(Number(stats.uptime) - (stats.day * 2))))}/100`} 
                 icon={<ShieldCheck />}
                 colorClass="bg-blue-100 dark:bg-blue-900/50"
               />
               <StatCard 
-                title="Uptime Hoy" 
+                title={t.uptimeToday} 
                 value={`${stats.uptime}%`} 
                 icon={<Activity />}
                 colorClass="bg-emerald-100 dark:bg-emerald-900/50"
               />
               <StatCard 
-                title="Caídas Hoy" 
+                title={t.dropsToday} 
                 value={stats.day} 
                 icon={<Calendar />}
                 colorClass="bg-orange-100 dark:bg-orange-900/50"
               />
               <StatCard 
-                title="Caídas Mes" 
+                title={t.dropsMonth} 
                 value={stats.month} 
                 icon={<CalendarDays />}
                 colorClass="bg-indigo-100 dark:bg-indigo-900/50"
               />
               <StatCard 
-                title="Caídas Año" 
+                title={t.dropsYear} 
                 value={stats.year} 
                 icon={<CalendarCheck />}
                 colorClass="bg-purple-100 dark:bg-purple-900/50"
@@ -272,7 +209,7 @@ export function Dashboard() {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <section className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Historial de Desconexiones</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t.disconnectionHistory}</h2>
                 <div className="flex flex-wrap items-center gap-2">
                   {events.length > 0 && (
                     <>
@@ -281,14 +218,14 @@ export function Dashboard() {
                         className="inline-flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm px-3 py-1.5 rounded-md transition-colors"
                       >
                         <Download className="w-4 h-4" />
-                        <span>CSV</span>
+                        <span>{t.csv}</span>
                       </button>
                       <button 
                         onClick={() => exportToExcel(events)}
                         className="inline-flex items-center space-x-2 text-sm text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 shadow-sm px-3 py-1.5 rounded-md transition-colors"
                       >
                         <FileSpreadsheet className="w-4 h-4" />
-                        <span>Excel</span>
+                        <span>{t.excel}</span>
                       </button>
                       <button 
                         onClick={handleClearClick}
@@ -299,7 +236,7 @@ export function Dashboard() {
                         }`}
                       >
                         <Trash2 className="w-4 h-4" />
-                        <span>{showClearConfirm ? '¿Confirmar?' : 'Borrar'}</span>
+                        <span>{showClearConfirm ? t.confirm : t.clear}</span>
                       </button>
                     </>
                   )}
@@ -329,28 +266,28 @@ export function Dashboard() {
           className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'home' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
           <Home className={`w-5 h-5 ${activeTab === 'home' ? 'fill-current' : ''}`} />
-          <span className="text-[10px] font-bold">Inicio</span>
+          <span className="text-[10px] font-bold">{t.home}</span>
         </button>
         <button 
           onClick={() => setActiveTab('speedtest')}
           className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'speedtest' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
           <Activity className={`w-5 h-5 ${activeTab === 'speedtest' ? 'fill-current' : ''}`} />
-          <span className="text-[10px] font-bold">Velocidad</span>
+          <span className="text-[10px] font-bold">{t.speedtest}</span>
         </button>
         <button 
           onClick={() => setActiveTab('history')}
           className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'history' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
           <Clock className={`w-5 h-5 ${activeTab === 'history' ? 'fill-current' : ''}`} />
-          <span className="text-[10px] font-bold">Historial</span>
+          <span className="text-[10px] font-bold">{t.history}</span>
         </button>
         <button 
           onClick={() => setActiveTab('profile')}
           className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
           <UserIcon className={`w-5 h-5 ${activeTab === 'profile' ? 'fill-current' : ''}`} />
-          <span className="text-[10px] font-bold">Perfil</span>
+          <span className="text-[10px] font-bold">{t.profile}</span>
         </button>
       </nav>
     </div>

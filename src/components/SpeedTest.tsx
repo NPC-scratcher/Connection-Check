@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Download, Upload, Play, Loader2, Activity } from 'lucide-react';
 import { Settings } from '../hooks/useSettings';
+import { translations } from '../lib/translations';
 
 interface SpeedTestProps {
   settings?: Settings;
@@ -8,6 +9,7 @@ interface SpeedTestProps {
 }
 
 export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
+  const t = translations[settings?.language || 'es'];
   const [isTesting, setIsTesting] = useState(false);
   const [speedMbps, setSpeedMbps] = useState<number | null>(null);
   const [uploadMbps, setUploadMbps] = useState<number | null>(null);
@@ -107,7 +109,7 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <Gauge className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Prueba de Velocidad</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t.speedtest}</h2>
         </div>
         <button
           onClick={runTest}
@@ -117,12 +119,12 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
           {isTesting ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Midiendo...</span>
+              <span>{t.measuring}</span>
             </>
           ) : (
             <>
               <Play className="w-4 h-4" />
-              <span>Iniciar Prueba</span>
+              <span>{t.startTest}</span>
             </>
           )}
         </button>
@@ -132,7 +134,7 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
         <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 flex items-center space-x-1">
             <Download className="w-4 h-4" />
-            <span>Descarga</span>
+            <span>{t.download}</span>
           </div>
           <div className="flex items-baseline space-x-1">
             <span className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -145,7 +147,7 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
         <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 flex items-center space-x-1">
             <Upload className="w-4 h-4" />
-            <span>Subida</span>
+            <span>{t.upload}</span>
           </div>
           <div className="flex items-baseline space-x-1">
             <span className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -158,7 +160,7 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
         <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 flex items-center space-x-1">
             <Activity className="w-4 h-4" />
-            <span>Ping</span>
+            <span>{t.ping}</span>
           </div>
           <div className="flex items-baseline space-x-1">
             <span className="text-2xl font-bold text-gray-900 dark:text-white">

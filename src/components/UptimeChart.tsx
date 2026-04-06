@@ -2,8 +2,13 @@ import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { DisconnectionEvent } from '../hooks/useConnectionMonitor';
 import { isSameDay } from '../lib/utils';
+import { useSettings } from '../hooks/useSettings';
+import { translations } from '../lib/translations';
 
 export function UptimeChart({ events }: { events: DisconnectionEvent[] }) {
+  const { settings } = useSettings();
+  const t = translations[settings.language];
+
   // Generate data for the last 7 days
   const data = Array.from({ length: 7 }).map((_, i) => {
     const d = new Date();
@@ -15,14 +20,14 @@ export function UptimeChart({ events }: { events: DisconnectionEvent[] }) {
     const uptime = Math.max(0, 100 - (downtime / totalMs) * 100);
 
     return {
-      name: d.toLocaleDateString('es-ES', { weekday: 'short' }),
+      name: d.toLocaleDateString(settings.language === 'es' ? 'es-ES' : 'en-US', { weekday: 'short' }),
       uptime: Number(uptime.toFixed(2))
     };
   });
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 transition-colors">
-      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Estabilidad (Últimos 7 días)</h3>
+      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">{t.stability}</h3>
       <div className="h-[200px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>

@@ -1,9 +1,13 @@
 import React from 'react';
 import { Globe, MapPin, Server, ShieldCheck } from 'lucide-react';
 import { useNetworkInfo } from '../hooks/useNetworkInfo';
+import { useSettings } from '../hooks/useSettings';
+import { translations } from '../lib/translations';
 
 export function NetworkInfoCard() {
   const { info, loading } = useNetworkInfo();
+  const { settings } = useSettings();
+  const t = translations[settings.language];
 
   if (loading) {
     return <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-32 rounded-2xl w-full"></div>;
@@ -15,7 +19,7 @@ export function NetworkInfoCard() {
     <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
       <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
         <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-        Información de Red
+        {t.networkInfo}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="flex items-center sm:items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl sm:bg-transparent sm:p-0">
@@ -23,7 +27,7 @@ export function NetworkInfoCard() {
             <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">IP Pública</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">{t.publicIp}</p>
             <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{info.ip}</p>
           </div>
         </div>
@@ -32,7 +36,7 @@ export function NetworkInfoCard() {
             <Server className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Proveedor</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">{t.provider}</p>
             <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate" title={info.isp}>{info.isp}</p>
           </div>
         </div>
@@ -41,7 +45,7 @@ export function NetworkInfoCard() {
             <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">Ubicación</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">{t.location}</p>
             <p className="text-sm sm:text-base font-medium text-gray-900 dark:text-white truncate">{info.city}, {info.country_name}</p>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import React from 'react';
 import { SpeedTestResult } from '../hooks/useSpeedTestHistory';
 import { Trash2, Activity, Download, Upload } from 'lucide-react';
+import { useSettings } from '../hooks/useSettings';
+import { translations } from '../lib/translations';
 
 interface SpeedTestHistoryTableProps {
   history: SpeedTestResult[];
@@ -8,10 +10,13 @@ interface SpeedTestHistoryTableProps {
 }
 
 export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTableProps) {
+  const { settings } = useSettings();
+  const t = translations[settings.language];
+
   if (history.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 text-center transition-colors">
-        <p className="text-gray-500 dark:text-gray-400">No hay pruebas de velocidad registradas.</p>
+        <p className="text-gray-500 dark:text-gray-400">{t.noHistory}</p>
       </div>
     );
   }
@@ -19,13 +24,13 @@ export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTabl
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center px-1">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Historial de Velocidad</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t.speedHistory}</h3>
         <button 
           onClick={onClear}
           className="inline-flex items-center space-x-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-md transition-colors"
         >
           <Trash2 className="w-4 h-4" />
-          <span>Borrar</span>
+          <span>{t.clear}</span>
         </button>
       </div>
 
@@ -44,14 +49,14 @@ export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTabl
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">Descarga</span>
+                <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.download}</span>
                 <div className="flex items-center space-x-1.5 text-blue-600 dark:text-blue-400">
                   <Download className="w-4 h-4" />
                   <span className="text-sm font-bold">{result.download} Mbps</span>
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">Subida</span>
+                <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.upload}</span>
                 <div className="flex items-center space-x-1.5 text-purple-600 dark:text-purple-400">
                   <Upload className="w-4 h-4" />
                   <span className="text-sm font-bold">{result.upload} Mbps</span>
@@ -68,10 +73,10 @@ export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTabl
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
               <tr>
-                <th className="px-6 py-3 font-medium">Fecha y Hora</th>
-                <th className="px-6 py-3 font-medium">Ping</th>
-                <th className="px-6 py-3 font-medium">Descarga</th>
-                <th className="px-6 py-3 font-medium">Subida</th>
+                <th className="px-6 py-3 font-medium">{t.time}</th>
+                <th className="px-6 py-3 font-medium">{t.ping}</th>
+                <th className="px-6 py-3 font-medium">{t.download}</th>
+                <th className="px-6 py-3 font-medium">{t.upload}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">

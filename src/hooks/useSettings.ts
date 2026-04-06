@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Language } from '../lib/translations';
 
 export interface Settings {
   checkInterval: number;
@@ -8,6 +9,7 @@ export interface Settings {
   autoSpeedtestInterval?: number;
   userName?: string;
   avatarUrl?: string;
+  language: Language;
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -18,6 +20,7 @@ const DEFAULT_SETTINGS: Settings = {
   autoSpeedtestInterval: 0, // in minutes, 0 means disabled
   userName: 'Usuario',
   avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+  language: 'es',
 };
 
 export function useSettings() {

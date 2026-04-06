@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Settings } from '../hooks/useSettings';
-import { Bell, Moon, Clock, AlertCircle, Cloud, Gauge, User, Globe, ShieldCheck } from 'lucide-react';
+import { Bell, Moon, Clock, AlertCircle, Cloud, Gauge, User, Globe, ShieldCheck, X } from 'lucide-react';
+import { translations, Language } from '../lib/translations';
 
 interface SettingsModalProps {
   settings: Settings;
@@ -9,6 +10,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ settings, onSave, onRequestNotificationPermission }: SettingsModalProps) {
+  const t = translations[settings.language];
   const [error, setError] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -80,10 +82,10 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
           )}
           <div className="flex-1">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {settings.userName && settings.userName !== 'Usuario' ? `Hola, ${settings.userName}` : 'Perfil de Usuario'}
+              {settings.userName && settings.userName !== 'Usuario' ? `Hola, ${settings.userName}` : t.profile}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1">
-              {settings.userName && settings.userName !== 'Usuario' ? 'Gestiona tu cuenta y preferencias de monitoreo.' : 'Inicia sesión para sincronizar tus datos en la nube.'}
+              {settings.userName && settings.userName !== 'Usuario' ? t.googleSyncDesc : t.googleSyncDesc}
             </p>
             {settings.userName === 'Usuario' && (
               <button
@@ -91,7 +93,7 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
                 className="mt-4 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm"
               >
                 <User className="w-4 h-4" />
-                <span>Iniciar Sesión con Google</span>
+                <span>{t.googleSync.split(' ')[0]} con Google</span>
               </button>
             )}
           </div>
@@ -102,7 +104,7 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
           <div className="space-y-6">
             <div className="flex items-center space-x-2 pb-2 border-b border-gray-100 dark:border-gray-700">
               <Clock className="w-5 h-5 text-blue-500" />
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">Configuración del Monitor</h3>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">{t.settings}</h3>
             </div>
             
             <div className="space-y-4">
@@ -117,12 +119,12 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
                     onChange={(e) => onSave({ checkInterval: Number(e.target.value) || 10 })}
                     className="w-full pl-3 pr-12 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white font-medium"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">SEG</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">{t.seconds}</span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Auto-Speedtest</label>
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.autoSpeedtest}</label>
                 <div className="flex items-center space-x-2">
                   <div className="relative flex-1">
                     <input 
@@ -137,10 +139,10 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
                       }}
                       className="w-full pl-3 pr-12 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white font-medium"
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">Min</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">{t.minutes}</span>
                   </div>
                 </div>
-                <p className="text-[10px] text-gray-400 font-medium">0 = Desactivado. Mínimo 5 minutos.</p>
+                <p className="text-[10px] text-gray-400 font-medium">{t.autoSpeedtestDesc}</p>
               </div>
 
             </div>
@@ -156,8 +158,25 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
                 <div className="flex items-center space-x-3">
+                  <Globe className="w-5 h-5 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Idioma / Language</span>
+                </div>
+                <select
+                  value={settings.language}
+                  onChange={(e) => onSave({ language: e.target.value as Language })}
+                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1 text-xs outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                >
+                  <option value="es">Español</option>
+                  <option value="en">English</option>
+                  <option value="pt">Português</option>
+                  <option value="fr">Français</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+                <div className="flex items-center space-x-3">
                   <Bell className="w-5 h-5 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Notificaciones</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.notifications}</span>
                 </div>
                 <button 
                   type="button"
@@ -171,7 +190,7 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
                 <div className="flex items-center space-x-3">
                   <Moon className="w-5 h-5 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Modo Oscuro</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.darkMode}</span>
                 </div>
                 <button 
                   type="button"
