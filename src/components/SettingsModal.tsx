@@ -46,15 +46,15 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
   };
 
   const handleDriveSync = () => {
-    const clientId = (import.meta as any).env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-      setError('Falta el VITE_GOOGLE_CLIENT_ID en las variables de entorno.');
-      return;
-    }
-
+    // Hardcoded Client ID to ensure it works in all environments
+    const clientId = "1031601818055-5tsakq99msd3s0iatar6nijoi58c557m.apps.googleusercontent.com";
+    console.log('Iniciando sincronización con Client ID:', clientId);
+    
     const redirectUri = `${window.location.origin}/oauth-callback.html`;
+    console.log('Redirect URI configurada:', redirectUri);
+    
     const scope = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile';
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
 
     const popup = window.open(authUrl, 'google_oauth', 'width=600,height=700');
     if (!popup) {
