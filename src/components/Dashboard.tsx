@@ -4,6 +4,7 @@ import { useSettings } from '../hooks/useSettings';
 import { StatCard } from './StatCard';
 import { HistoryTable } from './HistoryTable';
 import { UptimeChart } from './UptimeChart';
+import { SpeedTest } from './SpeedTest';
 import { SettingsModal } from './SettingsModal';
 import { isSameDay, isSameMonth, isSameYear, exportToCSV, calculateUptimeToday } from '../lib/utils';
 import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, Settings as SettingsIcon, Activity } from 'lucide-react';
@@ -89,9 +90,14 @@ export function Dashboard() {
           />
         </section>
 
-        {/* Chart */}
-        <section>
-          <UptimeChart events={events} />
+        {/* Chart and Speed Test */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <UptimeChart events={events} />
+          </div>
+          <div className="lg:col-span-1">
+            <SpeedTest />
+          </div>
         </section>
 
         {/* History */}
