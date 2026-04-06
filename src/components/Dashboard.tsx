@@ -14,11 +14,16 @@ import { findBackupFile, downloadBackup, uploadBackup } from '../lib/googleDrive
 import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, FileSpreadsheet, Home, Activity, Clock, User as UserIcon, ShieldCheck } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-export function Dashboard() {
+interface DashboardProps {
+  isTrial: boolean;
+  timeLeft: number;
+}
+
+export function Dashboard({ isTrial, timeLeft }: DashboardProps) {
   const { settings, updateSettings, requestNotificationPermission } = useSettings();
   const { t, isTranslating } = useTranslation(settings.language);
   const { isOnline, events, clearHistory, importEvents } = useConnectionMonitor(settings);
-  const { history: speedHistory, addResult: addSpeedResult, clearHistory: clearSpeedHistory } = useSpeedTestHistory();
+  const { history: speedHistory, addResult: addSpeedResult, clearHistory: clearSpeedHistory, importHistory } = useSpeedTestHistory();
   
   const [activeTab, setActiveTab] = useState<'home' | 'speedtest' | 'history' | 'profile'>('home');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -57,17 +62,20 @@ export function Dashboard() {
             const fileId = await findBackupFile(token);
             if (fileId) {
               const data = await downloadBackup(token, fileId);
-              if (data && Array.isArray(data)) {
-                importEvents(data);
-                // No alert needed, it just works
+              if (data) {
+                // Handle both old format (array of events) and new format (object with events and speedHistory)
+                if (Array.isArray(data)) {
+                  importEvents(data);
+                } else if (typeof data === 'object') {
+                  if (data.events) importEvents(data.events);
+                  if (data.speedHistory) importHistory(data.speedHistory);
+                }
               }
             } else {
-              await uploadBackup(token, events, null);
-              // No alert needed
+              await uploadBackup(token, { events, speedHistory }, null);
             }
           } catch (syncErr) {
             console.warn('Sync failed but login succeeded:', syncErr);
-            // We don't show an alert here to avoid annoying the user if the login worked
           }
         } catch (err) {
           console.error('Login profile fetch failed:', err);
@@ -79,17 +87,17 @@ export function Dashboard() {
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [events, importEvents, updateSettings, t]);
+  }, [events, speedHistory, importEvents, importHistory, updateSettings, t]);
 
-  // Auto-sync to Drive when events change
+  // Auto-sync to Drive when events or speedHistory change
   useEffect(() => {
-    if (!driveToken || events.length === 0) return;
+    if (!driveToken || (events.length === 0 && speedHistory.length === 0)) return;
     
     // Increased debounce to 10 seconds to avoid "too fast" errors from Google API
     const syncTimeout = setTimeout(async () => {
       try {
         const fileId = await findBackupFile(driveToken);
-        await uploadBackup(driveToken, events, fileId);
+        await uploadBackup(driveToken, { events, speedHistory }, fileId);
         console.log('Auto-sync success');
       } catch (err) {
         // Silent error in console to avoid bothering the user
@@ -98,7 +106,7 @@ export function Dashboard() {
     }, 10000); 
 
     return () => clearTimeout(syncTimeout);
-  }, [events, driveToken]);
+  }, [events, speedHistory, driveToken]);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -151,20 +159,30 @@ export function Dashboard() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t.checkingEvery} {settings.checkInterval}{t.seconds}</p>
             </div>
             
-            <div className="flex items-center space-x-3">
-              {isTranslating && (
-                <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">
-                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                  <span>Translating...</span>
+            <div className="flex flex-col items-end gap-2">
+              {/* Access Status */}
+              <div className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                <Clock className="w-3 h-3" />
+                <span>
+                  {isTrial ? t.trialActive : t.accessExpiresIn} {Math.floor(timeLeft / (60 * 60 * 1000))}h {Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000))}{t.minutes}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                {isTranslating && (
+                  <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">
+                    <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    <span>Translating...</span>
+                  </div>
+                )}
+                <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full border shadow-sm ${
+                  isOnline 
+                    ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
+                    : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400'
+                }`}>
+                  {isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5 animate-pulse" />}
+                  <span className="font-semibold">{isOnline ? t.connected : t.disconnected}</span>
                 </div>
-              )}
-              <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full border shadow-sm ${
-                isOnline 
-                  ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
-                  : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400'
-              }`}>
-                {isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5 animate-pulse" />}
-                <span className="font-semibold">{isOnline ? t.connected : t.disconnected}</span>
               </div>
             </div>
           </header>

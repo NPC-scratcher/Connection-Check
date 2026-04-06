@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { SpeedTestResult } from '../hooks/useSpeedTestHistory';
-import { Trash2, Activity, Download, Upload, DownloadCloud } from 'lucide-react';
+import { Trash2, Activity, Download, Upload, DownloadCloud, Filter, X, Clock } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -12,10 +12,39 @@ interface SpeedTestHistoryTableProps {
 export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTableProps) {
   const { settings } = useSettings();
   const { t } = useTranslation(settings.language);
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('00:00');
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('23:59');
+
+  const filteredHistory = useMemo(() => {
+    return history.filter(result => {
+      const resultTime = result.timestamp;
+
+      if (startDate) {
+        const start = new Date(`${startDate}T${startTime || '00:00'}`).getTime();
+        if (resultTime < start) return false;
+      }
+
+      if (endDate) {
+        const end = new Date(`${endDate}T${endTime || '23:59'}`).getTime();
+        if (resultTime > end) return false;
+      }
+
+      return true;
+    });
+  }, [history, startDate, startTime, endDate, endTime]);
+
+  const clearFilters = () => {
+    setStartDate('');
+    setStartTime('00:00');
+    setEndDate('');
+    setEndTime('23:59');
+  };
 
   const exportToCSV = () => {
     const headers = [t.date, `Ping (ms)`, `${t.download} (Mbps)`, `${t.upload} (Mbps)`];
-    const rows = history.map(r => [
+    const rows = filteredHistory.map(r => [
       new Date(r.timestamp).toLocaleString(),
       r.ping,
       r.download,
@@ -68,81 +97,152 @@ export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTabl
         </div>
       </div>
 
-      {/* Mobile View: Cards */}
-      <div className="grid grid-cols-1 gap-3 sm:hidden">
-        {history.map((result) => (
-          <div key={result.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-3">
-            <div className="flex justify-between items-center border-b border-gray-50 dark:border-gray-700/50 pb-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                {new Date(result.timestamp).toLocaleString()}
-              </span>
-              <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
-                <Activity className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-xs font-bold">{result.ping} ms</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.download}</span>
-                <div className="flex items-center space-x-1.5 text-blue-600 dark:text-blue-400">
-                  <Download className="w-4 h-4" />
-                  <span className="text-sm font-bold">{result.download} Mbps</span>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.upload}</span>
-                <div className="flex items-center space-x-1.5 text-purple-600 dark:text-purple-400">
-                  <Upload className="w-4 h-4" />
-                  <span className="text-sm font-bold">{result.upload} Mbps</span>
-                </div>
-              </div>
-            </div>
+      {/* Filters */}
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 items-end gap-4">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Filter className="w-3 h-3" />
+              {t.startDate}
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+            />
           </div>
-        ))}
-      </div>
-
-      {/* Desktop View: Table */}
-      <div className="hidden sm:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
-              <tr>
-                <th className="px-6 py-3 font-medium">{t.time}</th>
-                <th className="px-6 py-3 font-medium">{t.ping}</th>
-                <th className="px-6 py-3 font-medium">{t.download}</th>
-                <th className="px-6 py-3 font-medium">{t.upload}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {history.map((result) => (
-                <tr key={result.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                  <td className="px-6 py-4 text-gray-900 dark:text-gray-300 whitespace-nowrap">
-                    {new Date(result.timestamp).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
-                      <Activity className="w-4 h-4 text-gray-400" />
-                      <span>{result.ping} ms</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
-                      <Download className="w-4 h-4 text-blue-500" />
-                      <span className="font-medium">{result.download} Mbps</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
-                      <Upload className="w-4 h-4 text-purple-500" />
-                      <span className="font-medium">{result.upload} Mbps</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Clock className="w-3 h-3" />
+              {t.time}
+            </label>
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Filter className="w-3 h-3" />
+              {t.endDate}
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Clock className="w-3 h-3" />
+              {t.time}
+            </label>
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+            />
+          </div>
+          {(startDate || endDate || startTime !== '00:00' || endTime !== '23:59') && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4" />
+              {t.clear}
+            </button>
+          )}
         </div>
       </div>
+
+      {filteredHistory.length === 0 ? (
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 text-center transition-colors">
+          <p className="text-gray-500 dark:text-gray-400">{t.noHistory}</p>
+        </div>
+      ) : (
+        <>
+          {/* Mobile View: Cards */}
+          <div className="grid grid-cols-1 gap-3 sm:hidden">
+            {filteredHistory.map((result) => (
+              <div key={result.id} className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 space-y-3">
+                <div className="flex justify-between items-center border-b border-gray-50 dark:border-gray-700/50 pb-2">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                    {new Date(result.timestamp).toLocaleString()}
+                  </span>
+                  <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
+                    <Activity className="w-3.5 h-3.5 text-gray-400" />
+                    <span className="text-xs font-bold">{result.ping} ms</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.download}</span>
+                    <div className="flex items-center space-x-1.5 text-blue-600 dark:text-blue-400">
+                      <Download className="w-4 h-4" />
+                      <span className="text-sm font-bold">{result.download} Mbps</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.upload}</span>
+                    <div className="flex items-center space-x-1.5 text-purple-600 dark:text-purple-400">
+                      <Upload className="w-4 h-4" />
+                      <span className="text-sm font-bold">{result.upload} Mbps</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View: Table */}
+          <div className="hidden sm:block bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 font-medium">{t.time}</th>
+                    <th className="px-6 py-3 font-medium">{t.ping}</th>
+                    <th className="px-6 py-3 font-medium">{t.download}</th>
+                    <th className="px-6 py-3 font-medium">{t.upload}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                  {filteredHistory.map((result) => (
+                    <tr key={result.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <td className="px-6 py-4 text-gray-900 dark:text-gray-300 whitespace-nowrap">
+                        {new Date(result.timestamp).toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
+                          <Activity className="w-4 h-4 text-gray-400" />
+                          <span>{result.ping} ms</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
+                          <Download className="w-4 h-4 text-blue-500" />
+                          <span className="font-medium">{result.download} Mbps</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-1 text-gray-700 dark:text-gray-300">
+                          <Upload className="w-4 h-4 text-purple-500" />
+                          <span className="font-medium">{result.upload} Mbps</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

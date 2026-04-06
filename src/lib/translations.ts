@@ -99,6 +99,19 @@ export interface Translation {
   logout: string;
   connectedAs: string;
   drivePermissionError: string;
+  filterByDate: string;
+  startDate: string;
+  endDate: string;
+  all: string;
+  adWallTitle: string;
+  adWallDesc: string;
+  watchAd: string;
+  trialActive: string;
+  trialEndsIn: string;
+  accessExpiresIn: string;
+  hours: string;
+  unlockSuccess: string;
+  freeTrialDesc: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -184,7 +197,20 @@ export const translations: Record<Language, Translation> = {
     withGoogle: 'con Google',
     logout: 'Cerrar Sesión',
     connectedAs: 'Conectado como',
-    drivePermissionError: 'Es necesario conceder acceso a Google Drive para sincronizar tus datos.'
+    drivePermissionError: 'Es necesario conceder acceso a Google Drive para sincronizar tus datos.',
+    filterByDate: 'Filtrar por fecha',
+    startDate: 'Fecha inicio',
+    endDate: 'Fecha fin',
+    all: 'Todos',
+    adWallTitle: 'Acceso Restringido',
+    adWallDesc: 'Para seguir usando la app gratis, mira un anuncio. Cada anuncio te da 8 horas de acceso ilimitado.',
+    watchAd: 'Ver Anuncio para Desbloquear',
+    trialActive: 'Periodo de Prueba Activo',
+    trialEndsIn: 'Tu prueba gratis termina en:',
+    accessExpiresIn: 'Tu acceso expira en:',
+    hours: 'horas',
+    unlockSuccess: '¡Acceso concedido por 8 horas!',
+    freeTrialDesc: 'Disfruta de 24 horas de prueba gratuita antes de tu primer anuncio.'
   },
   en: {
     home: 'Home',
@@ -268,7 +294,20 @@ export const translations: Record<Language, Translation> = {
     withGoogle: 'with Google',
     logout: 'Logout',
     connectedAs: 'Connected as',
-    drivePermissionError: 'You must grant Google Drive access to sync your data.'
+    drivePermissionError: 'You must grant Google Drive access to sync your data.',
+    filterByDate: 'Filter by date',
+    startDate: 'Start date',
+    endDate: 'End date',
+    all: 'All',
+    adWallTitle: 'Access Restricted',
+    adWallDesc: 'To continue using the app for free, watch an ad. Each ad gives you 8 hours of unlimited access.',
+    watchAd: 'Watch Ad to Unlock',
+    trialActive: 'Free Trial Active',
+    trialEndsIn: 'Your free trial ends in:',
+    accessExpiresIn: 'Your access expires in:',
+    hours: 'hours',
+    unlockSuccess: 'Access granted for 8 hours!',
+    freeTrialDesc: 'Enjoy 24 hours of free trial before your first ad.'
   },
   pt: {
     home: 'Início',
@@ -352,7 +391,20 @@ export const translations: Record<Language, Translation> = {
     withGoogle: 'com Google',
     logout: 'Sair',
     connectedAs: 'Conectado como',
-    drivePermissionError: 'Você deve conceder acesso ao Google Drive para sincronizar seus dados.'
+    drivePermissionError: 'Você deve conceder acesso ao Google Drive para sincronizar seus dados.',
+    filterByDate: 'Filtrar por data',
+    startDate: 'Data de início',
+    endDate: 'Data de término',
+    all: 'Todos',
+    adWallTitle: 'Acesso Restrito',
+    adWallDesc: 'Para continuar usando o app gratuitamente, assista a um anúncio. Cada anúncio oferece 8 horas de acesso ilimitado.',
+    watchAd: 'Assistir Anúncio para Desbloquear',
+    trialActive: 'Período de Teste Ativo',
+    trialEndsIn: 'Seu teste gratuito termina em:',
+    accessExpiresIn: 'Seu acesso expira em:',
+    hours: 'horas',
+    unlockSuccess: 'Acesso concedido por 8 horas!',
+    freeTrialDesc: 'Aproveite 24 horas de teste gratuito antes do seu primeiro anúncio.'
   },
   fr: {
     home: 'Accueil',
@@ -436,6 +488,19 @@ export const translations: Record<Language, Translation> = {
     withGoogle: 'avec Google',
     logout: 'Déconnexion',
     connectedAs: 'Connecté en tant que',
-    drivePermissionError: 'Vous devez accorder l\'accès à Google Drive pour synchroniser vos données.'
+    drivePermissionError: 'Vous devez accorder l\'accès à Google Drive pour synchroniser vos données.',
+    filterByDate: 'Filtrer par date',
+    startDate: 'Date de début',
+    endDate: 'Date de fin',
+    all: 'Tout',
+    adWallTitle: 'Accès Restreint',
+    adWallDesc: 'Pour continuer à utiliser l\'application gratuitement, regardez une publicité. Chaque publicité vous donne 8 heures d\'accès illimité.',
+    watchAd: 'Regarder la publicité pour débloquer',
+    trialActive: 'Période d\'essai active',
+    trialEndsIn: 'Votre essai gratuit se termine dans :',
+    accessExpiresIn: 'Votre accès expire dans :',
+    hours: 'heures',
+    unlockSuccess: 'Accès accordé pour 8 heures !',
+    freeTrialDesc: 'Profitez de 24 heures d\'essai gratuit avant votre première publicité.'
   }
 };

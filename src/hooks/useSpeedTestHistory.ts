@@ -31,6 +31,15 @@ export function useSpeedTestHistory() {
   };
 
   const clearHistory = () => setHistory([]);
-
-  return { history, addResult, clearHistory };
+  
+  const importHistory = (newHistory: SpeedTestResult[]) => {
+    setHistory(prev => {
+      const historyMap = new Map<string, SpeedTestResult>();
+      prev.forEach(h => historyMap.set(h.id, h));
+      newHistory.forEach(h => historyMap.set(h.id, h));
+      return Array.from(historyMap.values()).sort((a, b) => b.timestamp - a.timestamp);
+    });
+  };
+  
+  return { history, addResult, clearHistory, importHistory };
 }
