@@ -47,6 +47,7 @@ export interface Translation {
   minutes: string;
   seconds: string;
   score: string;
+  exportCsv: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -95,7 +96,8 @@ export const translations: Record<Language, Translation> = {
     checkingEvery: 'Verificando cada',
     minutes: 'Min',
     seconds: 's',
-    score: 'Score'
+    score: 'Score',
+    exportCsv: 'Exportar CSV'
   },
   en: {
     home: 'Home',
@@ -142,7 +144,8 @@ export const translations: Record<Language, Translation> = {
     checkingEvery: 'Checking every',
     minutes: 'Min',
     seconds: 's',
-    score: 'Score'
+    score: 'Score',
+    exportCsv: 'Export CSV'
   },
   pt: {
     home: 'Início',
@@ -189,7 +192,8 @@ export const translations: Record<Language, Translation> = {
     checkingEvery: 'Verificando a cada',
     minutes: 'Min',
     seconds: 's',
-    score: 'Score'
+    score: 'Score',
+    exportCsv: 'Exportar CSV'
   },
   fr: {
     home: 'Accueil',
@@ -236,6 +240,7 @@ export const translations: Record<Language, Translation> = {
     checkingEvery: 'Vérification toutes les',
     minutes: 'Min',
     seconds: 's',
-    score: 'Score'
+    score: 'Score',
+    exportCsv: 'Exporter CSV'
   }
 };

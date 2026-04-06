@@ -1,6 +1,6 @@
 import React from 'react';
 import { SpeedTestResult } from '../hooks/useSpeedTestHistory';
-import { Trash2, Activity, Download, Upload } from 'lucide-react';
+import { Trash2, Activity, Download, Upload, DownloadCloud } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
 import { translations } from '../lib/translations';
 
@@ -12,6 +12,31 @@ interface SpeedTestHistoryTableProps {
 export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTableProps) {
   const { settings } = useSettings();
   const t = translations[settings.language];
+
+  const exportToCSV = () => {
+    const headers = ['Fecha', 'Ping (ms)', 'Descarga (Mbps)', 'Subida (Mbps)'];
+    const rows = history.map(r => [
+      new Date(r.timestamp).toLocaleString(),
+      r.ping,
+      r.download,
+      r.upload
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `speedtest_history_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   if (history.length === 0) {
     return (
@@ -25,13 +50,22 @@ export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTabl
     <div className="space-y-4">
       <div className="flex justify-between items-center px-1">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t.speedHistory}</h3>
-        <button 
-          onClick={onClear}
-          className="inline-flex items-center space-x-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-md transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-          <span>{t.clear}</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button 
+            onClick={exportToCSV}
+            className="inline-flex items-center space-x-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 px-3 py-1.5 rounded-md transition-colors"
+          >
+            <DownloadCloud className="w-4 h-4" />
+            <span>{t.exportCsv}</span>
+          </button>
+          <button 
+            onClick={onClear}
+            className="inline-flex items-center space-x-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-md transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>{t.clear}</span>
+          </button>
+        </div>
       </div>
 
       {/* Mobile View: Cards */}
