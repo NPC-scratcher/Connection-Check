@@ -76,15 +76,17 @@ export function Dashboard() {
   useEffect(() => {
     if (!driveToken || events.length === 0) return;
     
+    // Increased debounce to 10 seconds to avoid "too fast" errors from Google API
     const syncTimeout = setTimeout(async () => {
       try {
         const fileId = await findBackupFile(driveToken);
         await uploadBackup(driveToken, events, fileId);
-        console.log(t.autoSyncSuccess);
+        console.log('Auto-sync success');
       } catch (err) {
-        console.error(t.autoSyncError, err);
+        // Silent error in console to avoid bothering the user
+        console.warn('Auto-sync background attempt failed (likely rate limit):', err);
       }
-    }, 5000); // Debounce 5 seconds
+    }, 10000); 
 
     return () => clearTimeout(syncTimeout);
   }, [events, driveToken]);
