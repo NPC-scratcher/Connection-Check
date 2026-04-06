@@ -32,7 +32,7 @@ export function Dashboard() {
         setDriveToken(token);
         
         try {
-          // Fetch user profile info
+          // 1. Fetch user profile info (Always do this first)
           const profileRes = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`);
           if (profileRes.ok) {
             const profileData = await profileRes.json();
@@ -43,21 +43,25 @@ export function Dashboard() {
             });
           }
 
-          // Try to sync
-          const fileId = await findBackupFile(token);
-          if (fileId) {
-            const data = await downloadBackup(token, fileId);
-            if (data && Array.isArray(data)) {
-              importEvents(data);
-              alert(t.syncSuccess);
+          // 2. Try to sync with Drive (Silently if it fails)
+          try {
+            const fileId = await findBackupFile(token);
+            if (fileId) {
+              const data = await downloadBackup(token, fileId);
+              if (data && Array.isArray(data)) {
+                importEvents(data);
+                // No alert needed, it just works
+              }
+            } else {
+              await uploadBackup(token, events, null);
+              // No alert needed
             }
-          } else {
-            await uploadBackup(token, events, null);
-            alert(t.backupCreated);
+          } catch (syncErr) {
+            console.warn('Sync failed but login succeeded:', syncErr);
+            // We don't show an alert here to avoid annoying the user if the login worked
           }
         } catch (err) {
-          console.error(err);
-          alert(t.syncError);
+          console.error('Login profile fetch failed:', err);
         }
       } else if (event.data?.type === 'OAUTH_AUTH_ERROR') {
         console.error('OAuth Error:', event.data.error);

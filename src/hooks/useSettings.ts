@@ -10,6 +10,7 @@ export interface Settings {
   userName?: string;
   userEmail?: string;
   avatarUrl?: string;
+  driveFileId?: string | null;
   language: Language;
 }
 
@@ -23,6 +24,7 @@ const DEFAULT_SETTINGS: Settings = {
   autoSpeedtestInterval: 0, // in minutes, 0 means disabled
   userName: DEFAULT_USER_NAME,
   avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+  driveFileId: null,
   language: 'es',
 };
 
