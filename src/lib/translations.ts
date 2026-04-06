@@ -105,7 +105,7 @@ export interface Translation {
   all: string;
   adWallTitle: string;
   adWallDesc: string;
-  watchAd: string;
+  donate: string;
   trialActive: string;
   trialEndsIn: string;
   accessExpiresIn: string;
@@ -202,15 +202,15 @@ export const translations: Record<Language, Translation> = {
     startDate: 'Fecha inicio',
     endDate: 'Fecha fin',
     all: 'Todos',
-    adWallTitle: 'Acceso Restringido',
-    adWallDesc: 'Para seguir usando la app gratis, mira un anuncio. Cada anuncio te da 8 horas de acceso ilimitado.',
-    watchAd: 'Ver Anuncio para Desbloquear',
+    adWallTitle: 'Apoya el Proyecto',
+    adWallDesc: 'Para seguir usando la app gratis, considera hacer una donación. Cada donación te da 8 horas de acceso ilimitado.',
+    donate: 'Donar para Desbloquear',
     trialActive: 'Periodo de Prueba Activo',
     trialEndsIn: 'Tu prueba gratis termina en:',
     accessExpiresIn: 'Tu acceso expira en:',
     hours: 'horas',
     unlockSuccess: '¡Acceso concedido por 8 horas!',
-    freeTrialDesc: 'Disfruta de 24 horas de prueba gratuita antes de tu primer anuncio.'
+    freeTrialDesc: 'Disfruta de 24 horas de prueba gratuita antes de tu primera donación.'
   },
   en: {
     home: 'Home',
@@ -299,15 +299,15 @@ export const translations: Record<Language, Translation> = {
     startDate: 'Start date',
     endDate: 'End date',
     all: 'All',
-    adWallTitle: 'Access Restricted',
-    adWallDesc: 'To continue using the app for free, watch an ad. Each ad gives you 8 hours of unlimited access.',
-    watchAd: 'Watch Ad to Unlock',
+    adWallTitle: 'Support the Project',
+    adWallDesc: 'To continue using the app for free, consider making a donation. Each donation gives you 8 hours of unlimited access.',
+    donate: 'Donate to Unlock',
     trialActive: 'Free Trial Active',
     trialEndsIn: 'Your free trial ends in:',
     accessExpiresIn: 'Your access expires in:',
     hours: 'hours',
     unlockSuccess: 'Access granted for 8 hours!',
-    freeTrialDesc: 'Enjoy 24 hours of free trial before your first ad.'
+    freeTrialDesc: 'Enjoy 24 hours of free trial before your first donation.'
   },
   pt: {
     home: 'Início',
@@ -396,15 +396,15 @@ export const translations: Record<Language, Translation> = {
     startDate: 'Data de início',
     endDate: 'Data de término',
     all: 'Todos',
-    adWallTitle: 'Acesso Restrito',
-    adWallDesc: 'Para continuar usando o app gratuitamente, assista a um anúncio. Cada anúncio oferece 8 horas de acesso ilimitado.',
-    watchAd: 'Assistir Anúncio para Desbloquear',
+    adWallTitle: 'Apoie o Projeto',
+    adWallDesc: 'Para continuar usando o app gratuitamente, considere fazer uma doação. Cada doação oferece 8 horas de acesso ilimitado.',
+    donate: 'Doar para Desbloquear',
     trialActive: 'Período de Teste Ativo',
     trialEndsIn: 'Seu teste gratuito termina em:',
     accessExpiresIn: 'Seu acesso expira em:',
     hours: 'horas',
     unlockSuccess: 'Acesso concedido por 8 horas!',
-    freeTrialDesc: 'Aproveite 24 horas de teste gratuito antes do seu primeiro anúncio.'
+    freeTrialDesc: 'Aproveite 24 horas de teste gratuito antes da sua primeira doação.'
   },
   fr: {
     home: 'Accueil',
@@ -493,14 +493,14 @@ export const translations: Record<Language, Translation> = {
     startDate: 'Date de début',
     endDate: 'Date de fin',
     all: 'Tout',
-    adWallTitle: 'Accès Restreint',
-    adWallDesc: 'Pour continuer à utiliser l\'application gratuitement, regardez une publicité. Chaque publicité vous donne 8 heures d\'accès illimité.',
-    watchAd: 'Regarder la publicité pour débloquer',
+    adWallTitle: 'Soutenez le Projet',
+    adWallDesc: 'Pour continuer à utiliser l\'application gratuitement, envisagez de faire un don. Chaque don vous donne 8 heures d\'accès illimité.',
+    donate: 'Faire un don pour débloquer',
     trialActive: 'Période d\'essai active',
     trialEndsIn: 'Votre essai gratuit se termine dans :',
     accessExpiresIn: 'Votre accès expire dans :',
     hours: 'heures',
     unlockSuccess: 'Accès accordé pour 8 heures !',
-    freeTrialDesc: 'Profitez de 24 heures d\'essai gratuit avant votre première publicité.'
+    freeTrialDesc: 'Profitez de 24 heures d\'essai gratuit avant votre premier don.'
   }
 };

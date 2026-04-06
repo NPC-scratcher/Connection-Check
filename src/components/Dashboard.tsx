@@ -14,12 +14,7 @@ import { findBackupFile, downloadBackup, uploadBackup } from '../lib/googleDrive
 import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, FileSpreadsheet, Home, Activity, Clock, User as UserIcon, ShieldCheck } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 
-interface DashboardProps {
-  isTrial: boolean;
-  timeLeft: number;
-}
-
-export function Dashboard({ isTrial, timeLeft }: DashboardProps) {
+export function Dashboard() {
   const { settings, updateSettings, requestNotificationPermission } = useSettings();
   const { t, isTranslating } = useTranslation(settings.language);
   const { isOnline, events, clearHistory, importEvents } = useConnectionMonitor(settings);
@@ -160,14 +155,6 @@ export function Dashboard({ isTrial, timeLeft }: DashboardProps) {
             </div>
             
             <div className="flex flex-col items-end gap-2">
-              {/* Access Status */}
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 rounded-xl text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                <Clock className="w-3 h-3" />
-                <span>
-                  {isTrial ? t.trialActive : t.accessExpiresIn} {Math.floor(timeLeft / (60 * 60 * 1000))}h {Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000))}{t.minutes}
-                </span>
-              </div>
-
               <div className="flex items-center space-x-3">
                 {isTranslating && (
                   <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">

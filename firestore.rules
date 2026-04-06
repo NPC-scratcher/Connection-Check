@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: userAccess
+    // Document ID: {userId}
+    // Fields:
+    //   - userId: string (required) - The user's unique ID
+    //   - accessExpiry: number (required) - Timestamp in ms
+    //   - trialStartedAt: number (optional) - Timestamp in ms
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUserAccess(data) {
+      return data.keys().hasAll(['userId', 'accessExpiry']) &&
+             data.userId is string &&
+             data.accessExpiry is number &&
+             (!('trialStartedAt' in data) || data.trialStartedAt is number);
+    }
+
+    match /userAccess/{userId} {
+      allow read, write: if isOwner(userId) && isValidUserAccess(request.resource.data);
+    }
+  }
+}

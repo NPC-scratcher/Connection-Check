@@ -1,57 +1,73 @@
 import { useState, useEffect, useCallback } from 'react';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
-const TRIAL_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const AD_REWARD_DURATION = 8 * 60 * 60 * 1000; // 8 hours
 
 export function useAccessControl() {
   const [hasAccess, setHasAccess] = useState(true);
-  const [isTrial, setIsTrial] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkAccess = () => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUserId(user ? user.uid : null);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const checkAccess = async () => {
       const now = Date.now();
-      
-      // Check trial
-      let trialStarted = localStorage.getItem('trial_started_at');
-      if (!trialStarted) {
-        trialStarted = now.toString();
-        localStorage.setItem('trial_started_at', trialStarted);
-      }
-      
-      const trialExpiry = parseInt(trialStarted) + TRIAL_DURATION;
-      const accessExpiry = parseInt(localStorage.getItem('access_expiry') || '0');
-      
-      if (now < trialExpiry) {
-        setIsTrial(true);
-        setHasAccess(true);
-        setTimeLeft(trialExpiry - now);
-      } else if (now < accessExpiry) {
-        setIsTrial(false);
+      const docRef = doc(db, 'userAccess', userId);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        // New user: grant initial access or set to 0? 
+        // User wants it 100% free, so maybe grant access by default?
+        // Or just set expiry to a very long time?
+        // Let's grant access indefinitely for now.
+        const accessExpiry = now + (100 * 365 * 24 * 60 * 60 * 1000); // 100 years
+        await setDoc(docRef, { userId, accessExpiry });
         setHasAccess(true);
         setTimeLeft(accessExpiry - now);
       } else {
-        setIsTrial(false);
-        setHasAccess(false);
-        setTimeLeft(0);
+        const data = docSnap.data();
+        const accessExpiry = data.accessExpiry;
+        
+        if (now < accessExpiry) {
+          setHasAccess(true);
+          setTimeLeft(accessExpiry - now);
+        } else {
+          setHasAccess(false);
+          setTimeLeft(0);
+        }
       }
     };
 
     checkAccess();
     const interval = setInterval(checkAccess, 60000); // Check every minute
     return () => clearInterval(interval);
-  }, []);
+  }, [userId]);
 
-  const grantAccess = useCallback(() => {
-    const now = Date.now();
-    const currentExpiry = parseInt(localStorage.getItem('access_expiry') || '0');
-    const newExpiry = Math.max(now, currentExpiry) + AD_REWARD_DURATION;
+  const grantAccess = useCallback(async () => {
+    if (!userId) return;
     
-    localStorage.setItem('access_expiry', newExpiry.toString());
-    setHasAccess(true);
-    setIsTrial(false);
-    setTimeLeft(newExpiry - now);
-  }, []);
+    const now = Date.now();
+    const docRef = doc(db, 'userAccess', userId);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      const currentExpiry = docSnap.data().accessExpiry;
+      const newExpiry = Math.max(now, currentExpiry) + AD_REWARD_DURATION;
+      await updateDoc(docRef, { accessExpiry: newExpiry });
+      setHasAccess(true);
+      setTimeLeft(newExpiry - now);
+    }
+  }, [userId]);
 
-  return { hasAccess, isTrial, timeLeft, grantAccess };
+  return { hasAccess, timeLeft, grantAccess };
 }

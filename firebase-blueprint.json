@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "UserAccess": {
+      "title": "UserAccess",
+      "description": "Stores access expiry time for a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "accessExpiry": { "type": "number" },
+        "trialStartedAt": { "type": "number" }
+      },
+      "required": ["userId", "accessExpiry"]
+    }
+  },
+  "firestore": {
+    "/userAccess/{userId}": {
+      "schema": "UserAccess",
+      "description": "User access information."
+    }
+  }
+}
