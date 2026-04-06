@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Download, Upload, Play, Loader2, Activity } from 'lucide-react';
 import { Settings } from '../hooks/useSettings';
-import { translations } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface SpeedTestProps {
   settings?: Settings;
@@ -9,7 +9,7 @@ interface SpeedTestProps {
 }
 
 export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
-  const t = translations[settings?.language || 'es'];
+  const { t } = useTranslation(settings?.language || 'es');
   const [isTesting, setIsTesting] = useState(false);
   const [speedMbps, setSpeedMbps] = useState<number | null>(null);
   const [uploadMbps, setUploadMbps] = useState<number | null>(null);

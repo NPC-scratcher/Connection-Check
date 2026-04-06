@@ -9,11 +9,16 @@
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
     const accessToken = params.get('access_token');
+    const scope = params.get('scope');
     const error = params.get('error');
     
     if (window.opener) {
       if (accessToken) {
-        window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS', token: accessToken }, '*');
+        window.opener.postMessage({ 
+          type: 'OAUTH_AUTH_SUCCESS', 
+          token: accessToken,
+          scope: scope 
+        }, '*');
       } else if (error) {
         window.opener.postMessage({ type: 'OAUTH_AUTH_ERROR', error: error }, '*');
       }

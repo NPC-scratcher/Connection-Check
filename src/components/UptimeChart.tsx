@@ -3,11 +3,11 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { DisconnectionEvent } from '../hooks/useConnectionMonitor';
 import { isSameDay } from '../lib/utils';
 import { useSettings } from '../hooks/useSettings';
-import { translations } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function UptimeChart({ events }: { events: DisconnectionEvent[] }) {
   const { settings } = useSettings();
-  const t = translations[settings.language];
+  const { t } = useTranslation(settings.language);
 
   // Generate data for the last 7 days
   const data = Array.from({ length: 7 }).map((_, i) => {
@@ -20,7 +20,7 @@ export function UptimeChart({ events }: { events: DisconnectionEvent[] }) {
     const uptime = Math.max(0, 100 - (downtime / totalMs) * 100);
 
     return {
-      name: d.toLocaleDateString(settings.language === 'es' ? 'es-ES' : 'en-US', { weekday: 'short' }),
+      name: d.toLocaleDateString(settings.language, { weekday: 'short' }),
       uptime: Number(uptime.toFixed(2))
     };
   });

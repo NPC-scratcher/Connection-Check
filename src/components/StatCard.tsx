@@ -13,9 +13,9 @@ export function StatCard({ title, value, icon, colorClass }: StatCardProps) {
       <div className={`p-2 sm:p-3 rounded-lg ${colorClass} flex-shrink-0`}>
         {React.cloneElement(icon as React.ReactElement, { className: 'w-5 h-5 sm:w-6 sm:h-6' })}
       </div>
-      <div className="min-w-0">
-        <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{title}</p>
-        <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">{value}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider leading-tight mb-0.5 whitespace-normal break-words">{title}</p>
+        <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white break-words">{value}</p>
       </div>
     </div>
   );

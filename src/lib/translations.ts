@@ -1,5 +1,20 @@
 
-export type Language = 'es' | 'en' | 'pt' | 'fr';
+export type Language = string;
+
+export const SUPPORTED_LANGUAGES = [
+  { code: 'es', name: 'Español' },
+  { code: 'en', name: 'English' },
+  { code: 'pt', name: 'Português' },
+  { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'ja', name: '日本語' },
+  { code: 'ko', name: '한국어' },
+  { code: 'zh', name: '中文' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'ar', name: 'العربية' },
+  { code: 'hi', name: 'हिन्दी' },
+];
 
 export interface Translation {
   home: string;
@@ -83,6 +98,7 @@ export interface Translation {
   withGoogle: string;
   logout: string;
   connectedAs: string;
+  drivePermissionError: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -167,7 +183,8 @@ export const translations: Record<Language, Translation> = {
     defaultUser: 'Usuario',
     withGoogle: 'con Google',
     logout: 'Cerrar Sesión',
-    connectedAs: 'Conectado como'
+    connectedAs: 'Conectado como',
+    drivePermissionError: 'Es necesario conceder acceso a Google Drive para sincronizar tus datos.'
   },
   en: {
     home: 'Home',
@@ -250,7 +267,8 @@ export const translations: Record<Language, Translation> = {
     defaultUser: 'User',
     withGoogle: 'with Google',
     logout: 'Logout',
-    connectedAs: 'Connected as'
+    connectedAs: 'Connected as',
+    drivePermissionError: 'You must grant Google Drive access to sync your data.'
   },
   pt: {
     home: 'Início',
@@ -333,7 +351,8 @@ export const translations: Record<Language, Translation> = {
     defaultUser: 'Usuário',
     withGoogle: 'com Google',
     logout: 'Sair',
-    connectedAs: 'Conectado como'
+    connectedAs: 'Conectado como',
+    drivePermissionError: 'Você deve conceder acesso ao Google Drive para sincronizar seus dados.'
   },
   fr: {
     home: 'Accueil',
@@ -416,6 +435,7 @@ export const translations: Record<Language, Translation> = {
     defaultUser: 'Utilisateur',
     withGoogle: 'avec Google',
     logout: 'Déconnexion',
-    connectedAs: 'Connecté en tant que'
+    connectedAs: 'Connecté en tant que',
+    drivePermissionError: 'Vous devez accorder l\'accès à Google Drive pour synchroniser vos données.'
   }
 };

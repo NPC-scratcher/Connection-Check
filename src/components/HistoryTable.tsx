@@ -3,7 +3,7 @@ import { DisconnectionEvent } from '../hooks/useConnectionMonitor';
 import { formatDate, formatTime, formatDuration } from '../lib/utils';
 import { Clock, Calendar, Timer, Activity } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
-import { translations } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface HistoryTableProps {
   events: DisconnectionEvent[];
@@ -11,7 +11,7 @@ interface HistoryTableProps {
 
 export function HistoryTable({ events }: HistoryTableProps) {
   const { settings } = useSettings();
-  const t = translations[settings.language];
+  const { t } = useTranslation(settings.language);
 
   if (events.length === 0) {
     return (

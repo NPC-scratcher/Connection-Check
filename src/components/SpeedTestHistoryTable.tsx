@@ -2,7 +2,7 @@ import React from 'react';
 import { SpeedTestResult } from '../hooks/useSpeedTestHistory';
 import { Trash2, Activity, Download, Upload, DownloadCloud } from 'lucide-react';
 import { useSettings } from '../hooks/useSettings';
-import { translations } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface SpeedTestHistoryTableProps {
   history: SpeedTestResult[];
@@ -11,7 +11,7 @@ interface SpeedTestHistoryTableProps {
 
 export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTableProps) {
   const { settings } = useSettings();
-  const t = translations[settings.language];
+  const { t } = useTranslation(settings.language);
 
   const exportToCSV = () => {
     const headers = [t.date, `Ping (ms)`, `${t.download} (Mbps)`, `${t.upload} (Mbps)`];

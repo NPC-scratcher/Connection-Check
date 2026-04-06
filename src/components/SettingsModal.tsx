@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Settings, DEFAULT_USER_NAME } from '../hooks/useSettings';
 import { Bell, Moon, Clock, AlertCircle, Cloud, Gauge, User, Globe, ShieldCheck, X } from 'lucide-react';
-import { translations, Language } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
+import { SUPPORTED_LANGUAGES } from '../lib/translations';
 
 interface SettingsModalProps {
   settings: Settings;
@@ -11,7 +12,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ settings, onSave, onLogout, onRequestNotificationPermission }: SettingsModalProps) {
-  const t = translations[settings.language];
+  const { t, isTranslating } = useTranslation(settings.language);
   const [error, setError] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -133,7 +134,7 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.checkInterval}</label>
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-normal">{t.checkInterval}</label>
                 <div className="relative">
                   <input 
                     type="number" 
@@ -149,7 +150,7 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
 
               {settings.userName !== DEFAULT_USER_NAME && (
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.autoSpeedtest}</label>
+                  <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider whitespace-normal">{t.autoSpeedtest}</label>
                   <div className="flex items-center space-x-2">
                     <div className="relative flex-1">
                       <input 
@@ -182,6 +183,27 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
             </div>
 
             <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+                <div className="flex items-center space-x-3">
+                  <Globe className="w-5 h-5 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.languageLabel}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {isTranslating && (
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  )}
+                  <select 
+                    value={settings.language}
+                    onChange={(e) => onSave({ language: e.target.value })}
+                    className="bg-transparent text-sm font-bold text-blue-600 dark:text-blue-400 outline-none cursor-pointer"
+                  >
+                    {SUPPORTED_LANGUAGES.map(lang => (
+                      <option key={lang.code} value={lang.code} className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">{lang.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
                 <div className="flex items-center space-x-3">
                   <Bell className="w-5 h-5 text-gray-400" />

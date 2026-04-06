@@ -12,11 +12,11 @@ import { NetworkInfoCard } from './NetworkInfoCard';
 import { isSameDay, isSameMonth, isSameYear, exportToCSV, exportToExcel, calculateUptimeToday } from '../lib/utils';
 import { findBackupFile, downloadBackup, uploadBackup } from '../lib/googleDrive';
 import { Wifi, WifiOff, Calendar, CalendarDays, CalendarCheck, Trash2, Download, FileSpreadsheet, Home, Activity, Clock, User as UserIcon, ShieldCheck } from 'lucide-react';
-import { translations } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function Dashboard() {
   const { settings, updateSettings, requestNotificationPermission } = useSettings();
-  const t = translations[settings.language];
+  const { t, isTranslating } = useTranslation(settings.language);
   const { isOnline, events, clearHistory, importEvents } = useConnectionMonitor(settings);
   const { history: speedHistory, addResult: addSpeedResult, clearHistory: clearSpeedHistory } = useSpeedTestHistory();
   
@@ -29,6 +29,15 @@ export function Dashboard() {
     const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === 'OAUTH_AUTH_SUCCESS') {
         const token = event.data.token;
+        const scope = event.data.scope || '';
+        
+        // Check if Drive scope was granted
+        if (!scope.includes('https://www.googleapis.com/auth/drive.file')) {
+          console.error('Drive scope not granted');
+          alert(t.drivePermissionError);
+          return;
+        }
+
         setDriveToken(token);
         
         try {
@@ -143,6 +152,12 @@ export function Dashboard() {
             </div>
             
             <div className="flex items-center space-x-3">
+              {isTranslating && (
+                <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400 font-medium animate-pulse">
+                  <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  <span>Translating...</span>
+                </div>
+              )}
               <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full border shadow-sm ${
                 isOnline 
                   ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400' 
@@ -175,10 +190,10 @@ export function Dashboard() {
             </section>
 
             {/* Stats */}
-            <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
               <StatCard 
                 title={t.score} 
-                value={`${Math.max(0, Math.min(100, Math.round(Number(stats.uptime) - (stats.day * 2))))}/100`} 
+                value={`${Math.max(0, Math.min(100, Math.round(Number(stats.uptime) - (stats.day * 2))))}%`} 
                 icon={<ShieldCheck />}
                 colorClass="bg-blue-100 dark:bg-blue-900/50"
               />

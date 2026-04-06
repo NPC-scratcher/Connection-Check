@@ -2,12 +2,12 @@ import React from 'react';
 import { Globe, MapPin, Server, ShieldCheck } from 'lucide-react';
 import { useNetworkInfo } from '../hooks/useNetworkInfo';
 import { useSettings } from '../hooks/useSettings';
-import { translations } from '../lib/translations';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function NetworkInfoCard() {
   const { info, loading } = useNetworkInfo();
   const { settings } = useSettings();
-  const t = translations[settings.language];
+  const { t } = useTranslation(settings.language);
 
   if (loading) {
     return <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-20 rounded-2xl w-full"></div>;
@@ -22,8 +22,8 @@ export function NetworkInfoCard() {
           <ShieldCheck className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider">{t.publicIp}</p>
-          <p className="text-sm sm:text-lg font-bold text-gray-900 dark:text-white">{info.ip}</p>
+          <p className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider whitespace-normal break-words">{t.publicIp}</p>
+          <p className="text-sm sm:text-lg font-bold text-gray-900 dark:text-white break-words">{info.ip}</p>
         </div>
       </div>
     </div>
