@@ -16,18 +16,18 @@ export function useNetworkInfo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-    // Usamos ipapi.co para obtener datos de la red de forma gratuita
-    fetch('https://ipapi.co/json/', { signal: controller.signal })
+    // Usamos ipwho.is para obtener datos de la red de forma gratuita y sin CORS
+    fetch('https://ipwho.is/', { signal: controller.signal })
       .then(res => res.json())
       .then(data => {
         clearTimeout(timeoutId);
-        if (data.error) throw new Error(data.reason);
+        if (!data.success) throw new Error(data.message || 'Error fetching info');
         setInfo({
           ip: data.ip,
-          isp: data.org || data.isp || 'Desconocido',
+          isp: data.connection?.isp || data.connection?.org || 'Desconocido',
           city: data.city || 'Desconocida',
-          country_name: data.country_name || 'Desconocido',
-          org: data.asn || ''
+          country_name: data.country || 'Desconocido',
+          org: data.connection?.asn?.toString() || ''
         });
       })
       .catch(err => {
