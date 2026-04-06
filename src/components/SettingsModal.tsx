@@ -54,8 +54,11 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
     // Client ID for Google OAuth
     const clientId = "1031601818055-5tsakq99msd3s0iatar6nijoi58c557m.apps.googleusercontent.com";
     
-    const redirectUri = `${window.location.origin}/oauth-callback.html`;
-    const scope = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile';
+    // Ensure origin is clean
+    const origin = window.location.origin.replace(/\/$/, '');
+    const redirectUri = `${origin}/oauth-callback.html`;
+    
+    const scope = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${encodeURIComponent(scope)}`;
 
     const popup = window.open(authUrl, 'google_oauth', 'width=600,height=700');
