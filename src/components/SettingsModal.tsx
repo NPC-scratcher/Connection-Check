@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings } from '../hooks/useSettings';
+import { Settings, DEFAULT_USER_NAME } from '../hooks/useSettings';
 import { Bell, Moon, Clock, AlertCircle, Cloud, Gauge, User, Globe, ShieldCheck, X } from 'lucide-react';
 import { translations, Language } from '../lib/translations';
 
@@ -32,16 +32,16 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
           onSave({ notificationsEnabled: true });
         } else {
           if (isIframe) {
-            setError('Las notificaciones están bloqueadas en esta vista previa. Abre la app en una pestaña nueva (icono ↗ arriba a la derecha) para activarlas.');
+            setError(t.notifIframeError);
           } else {
-            setError('Permiso denegado. Haz clic en el candado de la barra de direcciones para permitir notificaciones.');
+            setError(t.notifDeniedError);
           }
         }
       } catch (e) {
         if (isIframe) {
-          setError('Las notificaciones están bloqueadas en esta vista previa. Abre la app en una pestaña nueva (icono ↗ arriba a la derecha) para activarlas.');
+          setError(t.notifIframeError);
         } else {
-          setError('No se pudieron solicitar los permisos en este entorno.');
+          setError(t.notifEnvError);
         }
       }
     } else {
@@ -62,7 +62,7 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
 
     const popup = window.open(authUrl, 'google_oauth', 'width=600,height=700');
     if (!popup) {
-      setError('El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para sincronizar con Google Drive.');
+      setError(t.popupBlockedError);
     }
   };
 
@@ -78,9 +78,9 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
       <div className="p-6 sm:p-8 space-y-8">
         {/* Profile Header */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left space-y-4 sm:space-y-0 sm:space-x-6">
-          {settings.userName && settings.userName !== 'Usuario' ? (
+          {settings.userName && settings.userName !== DEFAULT_USER_NAME ? (
             <img 
-              src={settings.avatarUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix'} 
+              src={settings.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${settings.userName}`} 
               alt="Avatar" 
               className="w-24 h-24 rounded-full border-4 border-blue-50 dark:border-blue-900/30 shadow-md"
             />
@@ -91,28 +91,28 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
           )}
           <div className="flex-1">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {settings.userName && settings.userName !== 'Usuario' ? `Hola, ${settings.userName}` : t.profile}
+              {settings.userName && settings.userName !== DEFAULT_USER_NAME ? `${t.hello}, ${settings.userName}` : t.profile}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1">
-              {settings.userName && settings.userName !== 'Usuario' ? t.googleSyncDesc : t.googleSyncDesc}
+              {settings.userName && settings.userName !== DEFAULT_USER_NAME ? t.googleSyncDesc : t.googleSyncDesc}
             </p>
-            {settings.userName === 'Usuario' && (
+            {settings.userName === DEFAULT_USER_NAME && (
               <div className="space-y-3">
                 <button
                   onClick={handleDriveSync}
                   className="mt-4 inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm text-sm"
                 >
                   <User className="w-4 h-4" />
-                  <span>{t.googleSync.split(' ')[0]} con Google</span>
+                  <span>{t.googleSync.split(' ')[0]} {t.withGoogle}</span>
                 </button>
                 
                 <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 mt-4">
                   <div className="flex items-start space-x-3">
                     <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
                     <div className="flex-1">
-                      <p className="text-xs font-bold text-amber-900 dark:text-amber-100 uppercase tracking-wider mb-1">Nota para el desarrollador</p>
+                      <p className="text-xs font-bold text-amber-900 dark:text-amber-100 uppercase tracking-wider mb-1">{t.devNote}</p>
                       <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
-                        Si ves el error <code className="bg-amber-100 dark:bg-amber-800 px-1 rounded text-amber-900 dark:text-amber-100">redirect_uri_mismatch</code>, debes añadir la siguiente URL a los "URIs de redireccionamiento autorizados" en tu Consola de Google Cloud:
+                        {t.redirectUriMismatch}
                       </p>
                       <div className="mt-2 flex items-center space-x-2">
                         <code className="flex-1 bg-white dark:bg-gray-900 p-2 rounded border border-amber-200 dark:border-amber-800 text-[10px] text-gray-600 dark:text-gray-400 break-all">
@@ -143,7 +143,7 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Intervalo de comprobación</label>
+                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.checkInterval}</label>
                 <div className="relative">
                   <input 
                     type="number" 
@@ -186,14 +186,14 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
           <div className="space-y-6">
             <div className="flex items-center space-x-2 pb-2 border-b border-gray-100 dark:border-gray-700">
               <ShieldCheck className="w-5 h-5 text-purple-500" />
-              <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">Preferencias y Sistema</h3>
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">{t.preferencesSystem}</h3>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
                 <div className="flex items-center space-x-3">
                   <Globe className="w-5 h-5 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Idioma / Language</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.languageLabel}</span>
                 </div>
                 <select
                   value={settings.language}
@@ -239,10 +239,10 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/50">
                   <div className="flex items-center space-x-3 mb-3">
                     <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <span className="text-sm font-bold text-blue-900 dark:text-blue-100">Sincronización Activa</span>
+                    <span className="text-sm font-bold text-blue-900 dark:text-blue-100">{t.syncActive}</span>
                   </div>
                   <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-                    Tus datos se están sincronizando automáticamente con Google Drive. Puedes acceder a ellos desde cualquier dispositivo.
+                    {t.syncActiveDesc}
                   </p>
                 </div>
               )}
@@ -253,10 +253,10 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-100 dark:border-gray-700">
           <button 
             type="button"
-            onClick={() => onSave({ checkInterval: 10, darkMode: false, notificationsEnabled: false, autoSpeedtestInterval: 0, userName: 'Usuario', avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix' })}
+            onClick={() => onSave({ checkInterval: 10, darkMode: false, notificationsEnabled: false, autoSpeedtestInterval: 0, userName: DEFAULT_USER_NAME, avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${DEFAULT_USER_NAME}` })}
             className="text-sm text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 font-medium transition-colors"
           >
-            Restaurar valores por defecto
+            {t.restoreDefaults}
           </button>
           <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Connection Monitor v2.0</p>
         </div>

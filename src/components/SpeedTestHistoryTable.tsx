@@ -14,7 +14,7 @@ export function SpeedTestHistoryTable({ history, onClear }: SpeedTestHistoryTabl
   const t = translations[settings.language];
 
   const exportToCSV = () => {
-    const headers = ['Fecha', 'Ping (ms)', 'Descarga (Mbps)', 'Subida (Mbps)'];
+    const headers = [t.date, `Ping (ms)`, `${t.download} (Mbps)`, `${t.upload} (Mbps)`];
     const rows = history.map(r => [
       new Date(r.timestamp).toLocaleString(),
       r.ping,

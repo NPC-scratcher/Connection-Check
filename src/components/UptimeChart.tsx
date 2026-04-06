@@ -36,7 +36,7 @@ export function UptimeChart({ events }: { events: DisconnectionEvent[] }) {
             <YAxis domain={[90, 100]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} tickFormatter={(val) => `${val}%`} />
             <Tooltip 
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-              formatter={(value: number) => [`${value}%`, 'Uptime']}
+              formatter={(value: number) => [`${value}%`, t.uptimeLabel]}
             />
             <Area type="monotone" dataKey="uptime" stroke="#10b981" fill="#d1fae5" strokeWidth={2} />
           </AreaChart>

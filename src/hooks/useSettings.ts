@@ -12,13 +12,15 @@ export interface Settings {
   language: Language;
 }
 
+export const DEFAULT_USER_NAME = '__DEFAULT_USER__';
+
 const DEFAULT_SETTINGS: Settings = {
   checkInterval: 10,
   pingUrl: 'https://www.google.com/favicon.ico',
   notificationsEnabled: false,
   darkMode: false,
   autoSpeedtestInterval: 0, // in minutes, 0 means disabled
-  userName: 'Usuario',
+  userName: DEFAULT_USER_NAME,
   avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
   language: 'es',
 };

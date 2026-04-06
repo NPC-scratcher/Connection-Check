@@ -48,18 +48,18 @@ export function Dashboard() {
             const data = await downloadBackup(token, fileId);
             if (data && Array.isArray(data)) {
               importEvents(data);
-              alert('Historial sincronizado desde Google Drive.');
+              alert(t.syncSuccess);
             }
           } else {
             await uploadBackup(token, events, null);
-            alert('Copia de seguridad creada en Google Drive.');
+            alert(t.backupCreated);
           }
         } catch (err) {
           console.error(err);
-          alert('Error al sincronizar con Google Drive.');
+          alert(t.syncError);
         }
       } else if (event.data?.type === 'OAUTH_AUTH_ERROR') {
-        alert('Error de autenticación con Google: ' + event.data.error);
+        alert(t.authError + event.data.error);
       }
     };
     window.addEventListener('message', handleMessage);
@@ -74,9 +74,9 @@ export function Dashboard() {
       try {
         const fileId = await findBackupFile(driveToken);
         await uploadBackup(driveToken, events, fileId);
-        console.log('Sincronización automática con Google Drive completada.');
+        console.log(t.autoSyncSuccess);
       } catch (err) {
-        console.error('Error en sincronización automática:', err);
+        console.error(t.autoSyncError, err);
       }
     }, 5000); // Debounce 5 seconds
 

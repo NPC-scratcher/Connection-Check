@@ -40,14 +40,14 @@ export function HistoryTable({ events }: HistoryTableProps) {
             </div>
             <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-50 dark:border-gray-700/50">
               <div>
-                <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Caída</p>
+                <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.drop}</p>
                 <div className="flex items-center space-x-1.5 text-red-600 dark:text-red-400">
                   <Clock className="w-3.5 h-3.5" />
                   <span className="text-sm font-medium">{formatTime(event.disconnectTime)}</span>
                 </div>
               </div>
               <div>
-                <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Regreso</p>
+                <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t.recovery}</p>
                 <div className="flex items-center space-x-1.5 text-green-600 dark:text-green-400">
                   <Clock className="w-3.5 h-3.5" />
                   <span className="text-sm font-medium">
@@ -69,25 +69,25 @@ export function HistoryTable({ events }: HistoryTableProps) {
                 <th className="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
                   <div className="flex items-center space-x-2">
                     <Calendar className="w-4 h-4" />
-                    <span>Día</span>
+                    <span>{t.day}</span>
                   </div>
                 </th>
                 <th className="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
                   <div className="flex items-center space-x-2">
                     <Clock className="w-4 h-4 text-red-500" />
-                    <span>Desconexión</span>
+                    <span>{t.disconnection}</span>
                   </div>
                 </th>
                 <th className="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
                   <div className="flex items-center space-x-2">
                     <Clock className="w-4 h-4 text-green-500" />
-                    <span>Reconexión</span>
+                    <span>{t.reconnection}</span>
                   </div>
                 </th>
                 <th className="p-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
                   <div className="flex items-center space-x-2">
                     <Timer className="w-4 h-4" />
-                    <span>Duración</span>
+                    <span>{t.duration}</span>
                   </div>
                 </th>
               </tr>
@@ -104,7 +104,7 @@ export function HistoryTable({ events }: HistoryTableProps) {
                   <td className="p-4 text-sm text-gray-600 dark:text-gray-400">
                     {event.reconnectTime ? formatTime(event.reconnectTime) : (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
-                        Esperando...
+                        {t.waiting}
                       </span>
                     )}
                   </td>

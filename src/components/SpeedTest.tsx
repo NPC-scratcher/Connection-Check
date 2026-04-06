@@ -37,11 +37,11 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
       const downloadStart = performance.now();
       const response = await fetch(`https://speed.cloudflare.com/__down?bytes=${downloadSize}&_t=${Date.now()}`, { cache: 'no-store' });
       
-      if (!response.ok) throw new Error('Error en la descarga');
+      if (!response.ok) throw new Error(t.downloadError);
       
       // Consume the body to measure the full download time accurately
       const reader = response.body?.getReader();
-      if (!reader) throw new Error('No se pudo leer la respuesta');
+      if (!reader) throw new Error(t.readError);
 
       let receivedLength = 0;
       while(true) {
@@ -83,7 +83,7 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
 
     } catch (err) {
       console.error(err);
-      setError('Error al realizar la prueba. Comprueba tu conexión.');
+      setError(t.testError);
     } finally {
       setIsTesting(false);
     }

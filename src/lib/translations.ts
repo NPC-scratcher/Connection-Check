@@ -48,6 +48,39 @@ export interface Translation {
   seconds: string;
   score: string;
   exportCsv: string;
+  drop: string;
+  recovery: string;
+  day: string;
+  disconnection: string;
+  reconnection: string;
+  waiting: string;
+  devNote: string;
+  redirectUriMismatch: string;
+  checkInterval: string;
+  preferencesSystem: string;
+  languageLabel: string;
+  syncActive: string;
+  syncActiveDesc: string;
+  restoreDefaults: string;
+  downloadError: string;
+  readError: string;
+  testError: string;
+  syncSuccess: string;
+  backupCreated: string;
+  syncError: string;
+  authError: string;
+  autoSyncSuccess: string;
+  autoSyncError: string;
+  date: string;
+  stability: string;
+  uptimeLabel: string;
+  notifIframeError: string;
+  notifDeniedError: string;
+  notifEnvError: string;
+  popupBlockedError: string;
+  hello: string;
+  defaultUser: string;
+  withGoogle: string;
 }
 
 export const translations: Record<Language, Translation> = {
@@ -97,7 +130,40 @@ export const translations: Record<Language, Translation> = {
     minutes: 'Min',
     seconds: 's',
     score: 'Score',
-    exportCsv: 'Exportar CSV'
+    exportCsv: 'Exportar CSV',
+    drop: 'Caída',
+    recovery: 'Regreso',
+    day: 'Día',
+    disconnection: 'Desconexión',
+    reconnection: 'Reconexión',
+    waiting: 'Esperando...',
+    devNote: 'Nota para el desarrollador',
+    redirectUriMismatch: 'Si ves el error redirect_uri_mismatch, debes añadir la siguiente URL a los "URIs de redireccionamiento autorizados" en tu Consola de Google Cloud:',
+    checkInterval: 'Intervalo de comprobación',
+    preferencesSystem: 'Preferencias y Sistema',
+    languageLabel: 'Idioma / Language',
+    syncActive: 'Sincronización Activa',
+    syncActiveDesc: 'Tus datos se están sincronizando automáticamente con Google Drive. Puedes acceder a ellos desde cualquier dispositivo.',
+    restoreDefaults: 'Restaurar valores por defecto',
+    downloadError: 'Error en la descarga',
+    readError: 'No se pudo leer la respuesta',
+    testError: 'Error al realizar la prueba. Comprueba tu conexión.',
+    syncSuccess: 'Historial sincronizado desde Google Drive.',
+    backupCreated: 'Copia de seguridad creada en Google Drive.',
+    syncError: 'Error al sincronizar con Google Drive.',
+    authError: 'Error de autenticación con Google: ',
+    autoSyncSuccess: 'Sincronización automática con Google Drive completada.',
+    autoSyncError: 'Error en sincronización automática:',
+    date: 'Fecha',
+    stability: 'Estabilidad de Conexión (7 días)',
+    uptimeLabel: 'Uptime',
+    notifIframeError: 'Las notificaciones están bloqueadas en esta vista previa. Abre la app en una pestaña nueva (icono ↗ arriba a la derecha) para activarlas.',
+    notifDeniedError: 'Permiso denegado. Haz clic en el candado de la barra de direcciones para permitir notificaciones.',
+    notifEnvError: 'No se pudieron solicitar los permisos en este entorno.',
+    popupBlockedError: 'El navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para sincronizar con Google Drive.',
+    hello: 'Hola',
+    defaultUser: 'Usuario',
+    withGoogle: 'con Google'
   },
   en: {
     home: 'Home',
@@ -145,7 +211,40 @@ export const translations: Record<Language, Translation> = {
     minutes: 'Min',
     seconds: 's',
     score: 'Score',
-    exportCsv: 'Export CSV'
+    exportCsv: 'Export CSV',
+    drop: 'Drop',
+    recovery: 'Recovery',
+    day: 'Day',
+    disconnection: 'Disconnection',
+    reconnection: 'Reconnection',
+    waiting: 'Waiting...',
+    devNote: 'Developer Note',
+    redirectUriMismatch: 'If you see the redirect_uri_mismatch error, you must add the following URL to the "Authorized redirect URIs" in your Google Cloud Console:',
+    checkInterval: 'Check Interval',
+    preferencesSystem: 'Preferences & System',
+    languageLabel: 'Language',
+    syncActive: 'Sync Active',
+    syncActiveDesc: 'Your data is being automatically synced with Google Drive. You can access it from any device.',
+    restoreDefaults: 'Restore Defaults',
+    downloadError: 'Download error',
+    readError: 'Could not read response',
+    testError: 'Error performing test. Check your connection.',
+    syncSuccess: 'History synced from Google Drive.',
+    backupCreated: 'Backup created in Google Drive.',
+    syncError: 'Error syncing with Google Drive.',
+    authError: 'Google authentication error: ',
+    autoSyncSuccess: 'Automatic sync with Google Drive completed.',
+    autoSyncError: 'Error in automatic sync:',
+    date: 'Date',
+    stability: 'Connection Stability (7 days)',
+    uptimeLabel: 'Uptime',
+    notifIframeError: 'Notifications are blocked in this preview. Open the app in a new tab (↗ icon top right) to enable them.',
+    notifDeniedError: 'Permission denied. Click the lock in the address bar to allow notifications.',
+    notifEnvError: 'Permissions could not be requested in this environment.',
+    popupBlockedError: 'The browser blocked the popup. Please allow popups to sync with Google Drive.',
+    hello: 'Hello',
+    defaultUser: 'User',
+    withGoogle: 'with Google'
   },
   pt: {
     home: 'Início',
@@ -193,7 +292,40 @@ export const translations: Record<Language, Translation> = {
     minutes: 'Min',
     seconds: 's',
     score: 'Score',
-    exportCsv: 'Exportar CSV'
+    exportCsv: 'Exportar CSV',
+    drop: 'Queda',
+    recovery: 'Recuperação',
+    day: 'Dia',
+    disconnection: 'Desconexão',
+    reconnection: 'Reconexão',
+    waiting: 'Aguardando...',
+    devNote: 'Nota para o Desenvolvedor',
+    redirectUriMismatch: 'Se você vir o erro redirect_uri_mismatch, deve adicionar a seguinte URL aos "URIs de redirecionamento autorizados" no seu Console do Google Cloud:',
+    checkInterval: 'Intervalo de Verificação',
+    preferencesSystem: 'Preferências e Sistema',
+    languageLabel: 'Idioma',
+    syncActive: 'Sincronização Ativa',
+    syncActiveDesc: 'Seus dados estão sendo sincronizados automaticamente com o Google Drive. Você pode acessá-los de qualquer dispositivo.',
+    restoreDefaults: 'Restaurar Padrões',
+    downloadError: 'Erro no download',
+    readError: 'Não foi possível ler a resposta',
+    testError: 'Erro ao realizar o teste. Verifique sua conexão.',
+    syncSuccess: 'Histórico sincronizado do Google Drive.',
+    backupCreated: 'Backup criado no Google Drive.',
+    syncError: 'Erro ao sincronizar com o Google Drive.',
+    authError: 'Erro de autenticação do Google: ',
+    autoSyncSuccess: 'Sincronização automática com o Google Drive concluída.',
+    autoSyncError: 'Erro na sincronização automática:',
+    date: 'Data',
+    stability: 'Estabilidade de Conexão (7 dias)',
+    uptimeLabel: 'Uptime',
+    notifIframeError: 'As notificações estão bloqueadas nesta visualização. Abra o aplicativo em uma nova guia (ícone ↗ no canto superior direito) para ativá-las.',
+    notifDeniedError: 'Permissão negada. Clique no cadeado na barra de endereço para permitir notificações.',
+    notifEnvError: 'Não foi possível solicitar permissões neste ambiente.',
+    popupBlockedError: 'O navegador bloqueou o pop-up. Por favor, permita pop-ups para sincronizar com o Google Drive.',
+    hello: 'Olá',
+    defaultUser: 'Usuário',
+    withGoogle: 'com Google'
   },
   fr: {
     home: 'Accueil',
@@ -241,6 +373,39 @@ export const translations: Record<Language, Translation> = {
     minutes: 'Min',
     seconds: 's',
     score: 'Score',
-    exportCsv: 'Exporter CSV'
+    exportCsv: 'Exporter CSV',
+    drop: 'Coupure',
+    recovery: 'Rétablissement',
+    day: 'Jour',
+    disconnection: 'Déconnexion',
+    reconnection: 'Reconnexion',
+    waiting: 'En attente...',
+    devNote: 'Note pour le développeur',
+    redirectUriMismatch: 'Si vous voyez l\'erreur redirect_uri_mismatch, vous devez ajouter l\'URL suivante aux "URI de redirection autorisés" dans votre console Google Cloud :',
+    checkInterval: 'Intervalle de vérification',
+    preferencesSystem: 'Préférences et Système',
+    languageLabel: 'Langue',
+    syncActive: 'Synchronisation Active',
+    syncActiveDesc: 'Vos données sont automatiquement synchronisées avec Google Drive. Vous pouvez y accéder depuis n\'importe quel appareil.',
+    restoreDefaults: 'Restaurer les paramètres par défaut',
+    downloadError: 'Erreur de téléchargement',
+    readError: 'Impossible de lire la réponse',
+    testError: 'Erreur lors du test. Vérifiez votre connexion.',
+    syncSuccess: 'Historique synchronisé depuis Google Drive.',
+    backupCreated: 'Sauvegarde créée dans Google Drive.',
+    syncError: 'Erreur de synchronisation avec Google Drive.',
+    authError: 'Erreur d\'authentification Google : ',
+    autoSyncSuccess: 'Synchronisation automatique avec Google Drive terminée.',
+    autoSyncError: 'Erreur de synchronisation automatique :',
+    date: 'Date',
+    stability: 'Stabilité de la Connexion (7 jours)',
+    uptimeLabel: 'Uptime',
+    notifIframeError: 'Les notifications sont bloquées dans cet aperçu. Ouvrez l\'application dans un nouvel onglet (icône ↗ en haut à droite) pour les activer.',
+    notifDeniedError: 'Permission refusée. Cliquez sur le cadenas dans la barre d\'adresse pour autoriser les notifications.',
+    notifEnvError: 'Les autorisations n\'ont pas pu être demandées dans cet environnement.',
+    popupBlockedError: 'Le navigateur a bloqué la fenêtre contextuelle. Veuillez autoriser les fenêtres contextuelles pour synchroniser avec Google Drive.',
+    hello: 'Bonjour',
+    defaultUser: 'Utilisateur',
+    withGoogle: 'avec Google'
   }
 };
