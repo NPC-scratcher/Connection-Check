@@ -221,35 +221,35 @@ export function Dashboard() {
             </section>
 
             {/* Stats */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+            <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
               <StatCard 
                 title="Score" 
                 value={`${Math.max(0, Math.min(100, Math.round(Number(stats.uptime) - (stats.day * 2))))}/100`} 
-                icon={<ShieldCheck className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
+                icon={<ShieldCheck />}
                 colorClass="bg-blue-100 dark:bg-blue-900/50"
               />
               <StatCard 
                 title="Uptime Hoy" 
                 value={`${stats.uptime}%`} 
-                icon={<Activity className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />}
+                icon={<Activity />}
                 colorClass="bg-emerald-100 dark:bg-emerald-900/50"
               />
               <StatCard 
                 title="Caídas Hoy" 
                 value={stats.day} 
-                icon={<Calendar className="w-6 h-6 text-orange-600 dark:text-orange-400" />}
+                icon={<Calendar />}
                 colorClass="bg-orange-100 dark:bg-orange-900/50"
               />
               <StatCard 
-                title="Caídas este Mes" 
+                title="Caídas Mes" 
                 value={stats.month} 
-                icon={<CalendarDays className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />}
+                icon={<CalendarDays />}
                 colorClass="bg-indigo-100 dark:bg-indigo-900/50"
               />
               <StatCard 
-                title="Caídas este Año" 
+                title="Caídas Año" 
                 value={stats.year} 
-                icon={<CalendarCheck className="w-6 h-6 text-purple-600 dark:text-purple-400" />}
+                icon={<CalendarCheck />}
                 colorClass="bg-purple-100 dark:bg-purple-900/50"
               />
             </section>
@@ -315,7 +315,6 @@ export function Dashboard() {
             <ProfileTab 
               settings={settings} 
               onSave={updateSettings} 
-              onClose={() => setActiveTab('home')} 
               onRequestNotificationPermission={requestNotificationPermission}
             />
           </div>
@@ -324,34 +323,34 @@ export function Dashboard() {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-around items-center h-16 px-2 sm:px-6 z-40 transition-colors">
+      <nav className="fixed bottom-0 w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 flex justify-around items-center h-16 px-2 sm:px-6 z-40 transition-colors pb-safe">
         <button 
           onClick={() => setActiveTab('home')}
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${activeTab === 'home' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'home' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
-          <Home className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Inicio</span>
+          <Home className={`w-5 h-5 ${activeTab === 'home' ? 'fill-current' : ''}`} />
+          <span className="text-[10px] font-bold">Inicio</span>
         </button>
         <button 
           onClick={() => setActiveTab('speedtest')}
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${activeTab === 'speedtest' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'speedtest' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
-          <Activity className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Velocidad</span>
+          <Activity className={`w-5 h-5 ${activeTab === 'speedtest' ? 'fill-current' : ''}`} />
+          <span className="text-[10px] font-bold">Velocidad</span>
         </button>
         <button 
           onClick={() => setActiveTab('history')}
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${activeTab === 'history' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'history' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
-          <Clock className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Historial</span>
+          <Clock className={`w-5 h-5 ${activeTab === 'history' ? 'fill-current' : ''}`} />
+          <span className="text-[10px] font-bold">Historial</span>
         </button>
         <button 
           onClick={() => setActiveTab('profile')}
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${activeTab === 'profile' ? 'text-blue-600 dark:text-blue-400 scale-110' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'}`}
         >
-          <UserIcon className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Perfil</span>
+          <UserIcon className={`w-5 h-5 ${activeTab === 'profile' ? 'fill-current' : ''}`} />
+          <span className="text-[10px] font-bold">Perfil</span>
         </button>
       </nav>
     </div>

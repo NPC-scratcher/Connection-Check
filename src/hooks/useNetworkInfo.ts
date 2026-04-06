@@ -13,10 +13,14 @@ export function useNetworkInfo() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
     // Usamos ipapi.co para obtener datos de la red de forma gratuita
-    fetch('https://ipapi.co/json/')
+    fetch('https://ipapi.co/json/', { signal: controller.signal })
       .then(res => res.json())
       .then(data => {
+        clearTimeout(timeoutId);
         if (data.error) throw new Error(data.reason);
         setInfo({
           ip: data.ip,
@@ -35,6 +39,11 @@ export function useNetworkInfo() {
           .catch(console.error);
       })
       .finally(() => setLoading(false));
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   return { info, loading };
