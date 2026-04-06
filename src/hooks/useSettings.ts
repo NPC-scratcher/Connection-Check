@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS: Settings = {
   pingUrl: 'https://www.google.com/favicon.ico',
   notificationsEnabled: false,
   darkMode: false,
-  autoSpeedtestInterval: 0,
+  autoSpeedtestInterval: 0, // in minutes, 0 means disabled
   userName: 'Usuario',
   avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
 };

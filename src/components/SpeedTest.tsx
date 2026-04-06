@@ -91,7 +91,7 @@ export function SpeedTest({ settings, onComplete }: SpeedTestProps) {
   useEffect(() => {
     if (!settings?.autoSpeedtestInterval || settings.autoSpeedtestInterval <= 0) return;
 
-    const intervalMs = settings.autoSpeedtestInterval * 60 * 60 * 1000; // hours to ms
+    const intervalMs = settings.autoSpeedtestInterval * 60 * 1000; // minutes to ms
     
     const intervalId = setInterval(() => {
       runTest();

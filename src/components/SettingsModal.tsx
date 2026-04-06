@@ -123,17 +123,24 @@ export function SettingsModal({ settings, onSave, onRequestNotificationPermissio
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Auto-Speedtest</label>
-                <select 
-                  value={settings.autoSpeedtestInterval || 0}
-                  onChange={(e) => onSave({ autoSpeedtestInterval: Number(e.target.value) })}
-                  className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white font-medium"
-                >
-                  <option value={0}>Desactivado</option>
-                  <option value={1}>Cada 1 hora</option>
-                  <option value={4}>Cada 4 horas</option>
-                  <option value={12}>Cada 12 horas</option>
-                  <option value={24}>Cada 24 horas</option>
-                </select>
+                <div className="flex items-center space-x-2">
+                  <div className="relative flex-1">
+                    <input 
+                      type="number" 
+                      min="0"
+                      value={settings.autoSpeedtestInterval || 0}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        // If user tries to set a value between 1 and 4, we force it to 5 as per request
+                        const finalVal = (val > 0 && val < 5) ? 5 : val;
+                        onSave({ autoSpeedtestInterval: finalVal });
+                      }}
+                      className="w-full pl-3 pr-12 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white font-medium"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">Min</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-gray-400 font-medium">0 = Desactivado. Mínimo 5 minutos.</p>
               </div>
 
             </div>
