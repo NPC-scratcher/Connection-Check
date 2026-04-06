@@ -118,6 +118,32 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
                   <User className="w-4 h-4" />
                   <span>{t.googleSync.split(' ')[0]} {t.withGoogle}</span>
                 </button>
+
+                {/* Developer notice only in AI Studio preview */}
+                {(window.location.hostname.includes('ais-dev') || window.location.hostname.includes('ais-pre')) && (
+                  <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 mt-4">
+                    <div className="flex items-start space-x-3">
+                      <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-amber-900 dark:text-amber-100 uppercase tracking-wider mb-1">{t.devNote}</p>
+                        <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
+                          {t.redirectUriMismatch}
+                        </p>
+                        <div className="mt-2 flex items-center space-x-2">
+                          <code className="flex-1 bg-white dark:bg-gray-900 p-2 rounded border border-amber-200 dark:border-amber-800 text-[10px] text-gray-600 dark:text-gray-400 break-all">
+                            {window.location.origin}/oauth-callback.html
+                          </code>
+                          <button 
+                            onClick={copyRedirectUri}
+                            className="p-2 bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 rounded hover:bg-amber-50 dark:hover:bg-amber-800/50 transition-colors"
+                          >
+                            {copySuccess ? <ShieldCheck className="w-4 h-4 text-green-500" /> : <Clock className="w-4 h-4 text-amber-600" />}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
