@@ -118,29 +118,6 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
                   <User className="w-4 h-4" />
                   <span>{t.googleSync.split(' ')[0]} {t.withGoogle}</span>
                 </button>
-                
-                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-xl p-4 mt-4">
-                  <div className="flex items-start space-x-3">
-                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="text-xs font-bold text-amber-900 dark:text-amber-100 uppercase tracking-wider mb-1">{t.devNote}</p>
-                      <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
-                        {t.redirectUriMismatch}
-                      </p>
-                      <div className="mt-2 flex items-center space-x-2">
-                        <code className="flex-1 bg-white dark:bg-gray-900 p-2 rounded border border-amber-200 dark:border-amber-800 text-[10px] text-gray-600 dark:text-gray-400 break-all">
-                          {window.location.origin}/oauth-callback.html
-                        </code>
-                        <button 
-                          onClick={copyRedirectUri}
-                          className="p-2 bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 rounded hover:bg-amber-50 dark:hover:bg-amber-800/50 transition-colors"
-                        >
-                          {copySuccess ? <ShieldCheck className="w-4 h-4 text-green-500" /> : <Clock className="w-4 h-4 text-amber-600" />}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
           </div>
@@ -170,27 +147,29 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.autoSpeedtest}</label>
-                <div className="flex items-center space-x-2">
-                  <div className="relative flex-1">
-                    <input 
-                      type="number" 
-                      min="0"
-                      value={settings.autoSpeedtestInterval || 0}
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        // If user tries to set a value between 1 and 4, we force it to 5 as per request
-                        const finalVal = (val > 0 && val < 5) ? 5 : val;
-                        onSave({ autoSpeedtestInterval: finalVal });
-                      }}
-                      className="w-full pl-3 pr-12 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white font-medium"
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">{t.minutes}</span>
+              {settings.userName !== DEFAULT_USER_NAME && (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t.autoSpeedtest}</label>
+                  <div className="flex items-center space-x-2">
+                    <div className="relative flex-1">
+                      <input 
+                        type="number" 
+                        min="0"
+                        value={settings.autoSpeedtestInterval || 0}
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          // If user tries to set a value between 1 and 4, we force it to 5 as per request
+                          const finalVal = (val > 0 && val < 5) ? 5 : val;
+                          onSave({ autoSpeedtestInterval: finalVal });
+                        }}
+                        className="w-full pl-3 pr-12 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-700 dark:text-white font-medium"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">{t.minutes}</span>
+                    </div>
                   </div>
+                  <p className="text-[10px] text-gray-400 font-medium">{t.autoSpeedtestDesc}</p>
                 </div>
-                <p className="text-[10px] text-gray-400 font-medium">{t.autoSpeedtestDesc}</p>
-              </div>
+              )}
 
             </div>
           </div>
@@ -231,14 +210,14 @@ export function SettingsModal({ settings, onSave, onLogout, onRequestNotificatio
                 </button>
               </div>
 
-              {settings.userName && settings.userName !== 'Usuario' && (
+              {settings.userName && settings.userName !== DEFAULT_USER_NAME && (
                 <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/50">
                   <div className="flex items-center space-x-3 mb-3">
                     <Cloud className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <span className="text-sm font-bold text-blue-900 dark:text-blue-100">{t.syncActive}</span>
+                    <span className="text-sm font-bold text-blue-900 dark:text-blue-100">{t.autoSync}</span>
                   </div>
                   <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-                    {t.syncActiveDesc}
+                    {t.autoSyncDesc}
                   </p>
                 </div>
               )}

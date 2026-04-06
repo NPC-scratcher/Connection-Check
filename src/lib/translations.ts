@@ -59,8 +59,8 @@ export interface Translation {
   checkInterval: string;
   preferencesSystem: string;
   languageLabel: string;
-  syncActive: string;
-  syncActiveDesc: string;
+  autoSync: string;
+  autoSyncDesc: string;
   restoreDefaults: string;
   downloadError: string;
   readError: string;
@@ -144,8 +144,8 @@ export const translations: Record<Language, Translation> = {
     checkInterval: 'Intervalo de comprobación',
     preferencesSystem: 'Preferencias y Sistema',
     languageLabel: 'Idioma / Language',
-    syncActive: 'Sincronización Activa',
-    syncActiveDesc: 'Tus datos se están sincronizando automáticamente con Google Drive. Puedes acceder a ellos desde cualquier dispositivo.',
+    autoSync: 'Sincronización Automática',
+    autoSyncDesc: 'Tus datos se están sincronizando automáticamente con Google Drive. Puedes acceder a ellos desde cualquier dispositivo.',
     restoreDefaults: 'Restaurar valores por defecto',
     downloadError: 'Error en la descarga',
     readError: 'No se pudo leer la respuesta',
@@ -227,8 +227,8 @@ export const translations: Record<Language, Translation> = {
     checkInterval: 'Check Interval',
     preferencesSystem: 'Preferences & System',
     languageLabel: 'Language',
-    syncActive: 'Sync Active',
-    syncActiveDesc: 'Your data is being automatically synced with Google Drive. You can access it from any device.',
+    autoSync: 'Automatic Sync',
+    autoSyncDesc: 'Your data is being automatically synced with Google Drive. You can access it from any device.',
     restoreDefaults: 'Restore Defaults',
     downloadError: 'Download error',
     readError: 'Could not read response',
@@ -310,8 +310,8 @@ export const translations: Record<Language, Translation> = {
     checkInterval: 'Intervalo de Verificação',
     preferencesSystem: 'Preferências e Sistema',
     languageLabel: 'Idioma',
-    syncActive: 'Sincronização Ativa',
-    syncActiveDesc: 'Seus dados estão sendo sincronizados automaticamente com o Google Drive. Você pode acessá-los de qualquer dispositivo.',
+    autoSync: 'Sincronização Automática',
+    autoSyncDesc: 'Seus dados estão sendo sincronizados automaticamente com o Google Drive. Você pode acessá-los de qualquer dispositivo.',
     restoreDefaults: 'Restaurar Padrões',
     downloadError: 'Erro no download',
     readError: 'Não foi possível ler a resposta',
@@ -393,8 +393,8 @@ export const translations: Record<Language, Translation> = {
     checkInterval: 'Intervalle de vérification',
     preferencesSystem: 'Préférences et Système',
     languageLabel: 'Langue',
-    syncActive: 'Synchronisation Active',
-    syncActiveDesc: 'Vos données sont automatiquement synchronisées avec Google Drive. Vous pouvez y accéder depuis n\'importe quel appareil.',
+    autoSync: 'Synchronisation Automatique',
+    autoSyncDesc: 'Vos données sont automatiquement synchronisées avec Google Drive. Vous pouvez y accéder depuis n\'importe quel appareil.',
     restoreDefaults: 'Restaurer les paramètres par défaut',
     downloadError: 'Erreur de téléchargement',
     readError: 'Impossible de lire la réponse',
