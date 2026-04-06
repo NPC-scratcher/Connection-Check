@@ -1,0 +1,5 @@
+{
+  "name": "Connection Monitor",
+  "description": "Monitors internet connection, logs disconnections, and provides statistics.",
+  "requestFramePermissions": []
+}
