@@ -60,12 +60,13 @@ export function Dashboard() {
           alert(t.syncError);
         }
       } else if (event.data?.type === 'OAUTH_AUTH_ERROR') {
-        alert(t.authError + event.data.error);
+        console.error('OAuth Error:', event.data.error);
+        alert(`${t.authError}: ${event.data.error}`);
       }
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [events, importEvents, updateSettings]);
+  }, [events, importEvents, updateSettings, t]);
 
   // Auto-sync to Drive when events change
   useEffect(() => {
